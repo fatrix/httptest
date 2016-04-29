@@ -1,0 +1,58 @@
+<form id="testForm" class="json_data">
+{% csrf_token %}
+<fieldset>
+
+<!-- Form Name -->
+<legend>Definition</legend>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Name</label>  
+  <div class="col-md-8">
+  <input id="textinput" name="name" type="text" placeholder="" value="{{obj.data.name}}" class="form-control" required="">
+  <span class="help-block">Name of your test</span>  
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="email">Email</label>  
+  <div class="col-md-8">
+  <input id="email" name="email" type="text" placeholder="" value="{{obj.data.email}}" class="form-control" required="">
+  <span class="help-block">Your email address</span>  
+    
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="data">Data</label>
+  <div class="col-md-8">                     
+    <textarea class="form-control textare-lg" id="data" name="data" rows="3"></textarea>
+    <span class="help-block">Configuration for tests and environments</span>  
+  </div>
+</div>
+
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="url">URL</label>  
+  <div class="col-md-8">
+  <input id="url" name="url" type="text" placeholder="" value="{{obj.data.config_url}}" class="form-control" value="{{obj.data.config_url}}">
+  <span class="help-block">URL to configuration file</span>  
+  </div>
+</div>
+
+<!-- Button (Double) -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="runTest"></label>
+  <div class="col-md-8">
+    <button id="runTest" name="runTest" class="btn btn-info">Run Test</button>
+    <button id="resetResults" name="resetResults" class="btn btn-danger">Reset Results</button>
+  </div>
+</div>
+
+
+</fieldset>
+</form>
+

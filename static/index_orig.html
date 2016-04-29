@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- jquery -->
+		<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+
+		<link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}/css/httptest.css">
+
+		<script   src="{{ FASTAPP_STATIC_URL }}/js/httptest.js"></script>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	</head>
+<body>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <img src="http://placehold.it/150x50&text=HTTPTest" alt="">
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">About</a>
+                    </li>
+                    <li>
+                        <a href="#">Services</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Heading Row -->
+        <div class="row">
+            <div class="col-md-8">
+                <img class="img-responsive img-rounded" src="http://placehold.it/900x350" alt="">
+            </div>
+            <!-- /.col-md-8 -->
+            <div class="col-md-4">
+                <h1>Business Name or Tagline</h1>
+                <p>This is a template that is great for small businesses. It doesn't have too much fancy flare to it, but it makes a great use of the standard Bootstrap core components. Feel free to use this template for any project you want!</p>
+                <a class="btn btn-primary btn-lg" href="#">Call to Action!</a>
+            </div>
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+        <!-- Call to Action Well -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="well text-center">
+                    This is a well that is a great spot for a business tagline or phone number for easy access!
+                </div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <!-- Content Row -->
+		{% for obj in datastore.all %}
+			{% ifequal obj.data.testid QUERY_PARAMS.testid %}
+			{% for result in obj.data.results %}
+
+        <div class="row">
+            <div class="col-md-4">
+		<h2>Testresults</h2>
+	    </div>
+            <div class="col-md-8">
+
+				<h3>{{ result.result}}</h3>
+				<p>
+					{% for url, l in result.items %}
+						<h4>{{ url }}</h4>
+						<h5>{{l.result}}</h5>
+						{% for failure in l.failures %} 
+							<div class="alert alert-warning" role="alert">{{failure}}</div>
+						{% endfor %}
+						{% for error in l.errors %} 
+							<div class="alert alert-danger" role="alert">{{error}}</div>
+						{% endfor %}
+						{% for skipped in l.skipped %} 
+							<div class="alert alert-info" role="alert">{{skipped}}</div>
+						{% endfor %}
+					{% endfor %}
+				</p>
+			    </div>
+            </div>
+        </div>
+			{% endfor %}
+			{% endifequal %}
+		    {% endfor %}
+
+        <!-- /.row -->
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Your Website 2014</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

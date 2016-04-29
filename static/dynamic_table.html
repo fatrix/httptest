@@ -1,0 +1,17 @@
+							<table id="table" class="table table-condensed">
+								<thead>
+									<tr>
+										<th data-field="key" class="col-md-3">Name</th>
+										<th data-field="value">Value</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for name, value in items %}
+									<tr>
+										<td class="name">{{name}}</td>
+										<td class="value">{{value}}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+
