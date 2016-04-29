@@ -1,4 +1,4 @@
-{% load humanize %} {#{% include "admin:httptest:static/table.html" %}#}
+{% load humanize %} {#{% include "philipsahli:httptest:static/table.html" %}#}
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -96,7 +96,7 @@
 
 		<div class="row">
 			<div class="col-md-8">
-					{% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} {% include "admin:httptest:static/form.html" with obj=obj %}
+					{% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} {% include "philipsahli:httptest:static/form.html" with obj=obj %}
 			</div>
 		</div>
 
@@ -154,17 +154,17 @@
 							<h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
 							<h4>{{ url }}</h4> {% for failure in l.failures %}
 							<div class="alert alert-warning" role="alert">
-								{% include "admin:httptest:static/table.html" with env=failure.env_name url=failure.url message=failure.message %}
+								{% include "philipsahli:httptest:static/table.html" with env=failure.env_name url=failure.url message=failure.message %}
 								<h4>Headers</h4>
-								<h5>Request</h5> {% include "admin:httptest:static/dynamic_table.html" with items=failure.headers.request.items %}
-								<h5>Response</h5> {% include "admin:httptest:static/dynamic_table.html" with items=failure.headers.response.items %}
+								<h5>Request</h5> {% include "philipsahli:httptest:static/dynamic_table.html" with items=failure.headers.request.items %}
+								<h5>Response</h5> {% include "philipsahli:httptest:static/dynamic_table.html" with items=failure.headers.response.items %}
 							</div>
 							{% endfor %} {% for error in l.errors %}
 							<div class="alert alert-danger" role="alert">
-								{% include "admin:httptest:static/table.html" with env=error.env_name url=error.url message=error.message %}
+								{% include "philipsahli:httptest:static/table.html" with env=error.env_name url=error.url message=error.message %}
 								<h4>Headers</h4>
-								<h5>Request</h5> {% include "admin:httptest:static/dynamic_table.html" with items=error.headers.request.items %}
-								<h5>Response</h5> {% include "admin:httptest:static/dynamic_table.html" with items=error.headers.response.items %}
+								<h5>Request</h5> {% include "philipsahli:httptest:static/dynamic_table.html" with items=error.headers.request.items %}
+								<h5>Response</h5> {% include "philipsahli:httptest:static/dynamic_table.html" with items=error.headers.response.items %}
 							</div>
 							{% endfor %}
 							<!--{% for skipped in l.skipped %} 
