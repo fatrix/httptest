@@ -39,7 +39,7 @@ def func(self):
 			msg = ""
 			for test in test_list:
 				testurl = "%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
-				msg+=testurl+"\n"
+				msg+="%s: %s\n" % (test.data.get('name', "Nameless", testurl))
 
 			import sys
 			from boto.ses import connect_to_region
