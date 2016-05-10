@@ -35,8 +35,8 @@ $(document).ready(function() {
 	//
 	var mytestid = $.getQueryString('testid');
 	var version = $.getQueryString('version');
-	$("h1#testid").text("ID: " + mytestid);
-	$("h1#version").text("RUNTIME-VERSION: " + version);
+	$("h1#testid").text(mytestid);
+	// $("h1#version").text("RUNTIME-VERSION: " + version);
 
 	var x = $('a#sendmail').attr('href');
 	$('a#sendmail').attr('href',x+"?sendmail&testid="+mytestid);
@@ -52,11 +52,6 @@ $(document).ready(function() {
 	$("button#runTest").click(function(e) {
 		e.preventDefault();
 		var url_data = $("input#url");
-		//if (url_data.val().length === 0) {
-		//	data = $("textarea#data").val();
-		//} else {
-		//	data = "url=" + url_data.val();
-		//}
 		data = $("#testForm").serialize();
 		$.ajax({
 			data: data,
@@ -69,5 +64,31 @@ $(document).ready(function() {
 			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
 		});
 	});
+	$("button#reset").click(function(e) {
+		e.preventDefault();
+		$.ajax({
+			success: function(data) {
+				location.reload(true);
+			},
+			error: function() {},
+			processData: false,
+			type: 'POST',
+			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=reset&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+		});
+	});
+	$("button#delete").click(function(e) {
+		e.preventDefault();
+		$.ajax({
+			success: function(data) {
+				location.reload(true);
+			},
+			error: function() {},
+			processData: false,
+			type: 'POST',
+			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+		});
+	});
+
+
 
 });

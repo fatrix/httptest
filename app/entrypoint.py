@@ -59,6 +59,13 @@ def func(self):
     elif self.method == "GET":
         return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
 
+    elif self.method == "POST" and self.GET.get('action') == "reset":
+        data.data['runs'] = []
+        self.datastore.update(data)
+        return self.responses.JSONResponse({'message': "reset"})
+    elif self.method == "POST" and self.GET.get('action') == "delete":
+        self.datastore.delete(data)
+        return self.responses.JSONResponse({'message': "delete"})
     elif self.method == "POST":
         # update name
         name = self.POST.get("name", None)
