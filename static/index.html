@@ -37,6 +37,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
+
+
+<script type="text/javascript">
+    window.user = {{RUNTIME_USER}};
+</script>
+
 </head>
 
 <body>
@@ -92,8 +98,8 @@
                 <h1 id="testid"></h1>
                 <!-- <h1 id="version"></h1> -->
                 <!--<a href="/fastapp/api/base/httptest/apy/entrypoint/execute/">Create new test</a>-->
-                <a target="_blank" href="/fastapp/api/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Create new test</a>
-                <a target="_blank" id="sendmail" href="/fastapp/api/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Mail my links </a>
+                <a target="_blank" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Create new test</a>
+                <a target="_blank" id="sendmail" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Mail my links </a>
                 <div>
                     <h3>Example Data</h3>
                     <div class="row">

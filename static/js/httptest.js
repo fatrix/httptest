@@ -61,7 +61,7 @@ $(document).ready(function() {
 			error: function() {},
 			processData: false,
 			type: 'POST',
-			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+			url: '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&testid=' + mytestid + "&version=" + version
 		});
 	});
 	$("button#reset").click(function(e) {
@@ -73,7 +73,7 @@ $(document).ready(function() {
 			error: function() {},
 			processData: false,
 			type: 'POST',
-			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=reset&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+			url: '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=reset&testid=' + mytestid + "&version=" + version
 		});
 	});
 	$("button#delete").click(function(e) {
