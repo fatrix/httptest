@@ -30,7 +30,7 @@ def func(self):
         json_data.update({"version": version})
         json_data.update({"runs": []})
         self.datastore.write_dict(json_data)
-        return self.responses.RedirectResponse("/fastapp/api/username/admin/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (new_id, version))
+        return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
 
 
     if self.method == "GET" and self.GET.has_key("sendmail"):
