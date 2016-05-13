@@ -17,15 +17,10 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /> 
 
-
-<!-- Meta Tags Created by: www.MetaTagGenerator.org -->
-
-
     <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 
-
-    <script src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
+    <script type="text/javascript" src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -38,15 +33,13 @@
 
     <link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
 
-
-<script type="text/javascript">
-    window.user = "{{RUNTIME_USER}}";
-</script>
+    <script type="text/javascript">
+        window.user = "{{RUNTIME_USER}}";
+    </script>
 
 </head>
 
 <body>
-
 
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -169,7 +162,6 @@ requests:
 
                     <div class="col-md-4 smaller-text">
                         <h3>Overview</h3>
-                        <p>
                             {% for url, l in run.result.items %} {% if l.success %}
                             <div class="alert alert-success" role="alert">{{ url }} {% else %}
                                 <div class="alert alert-warning" role="alert">{{ url }} {% endif %}
@@ -181,7 +173,6 @@ requests:
                                     </p>
                                 </div>
                                 {% endfor %}
-                        </p>
                         </div>
                         <div class="col-md-8 smaller-text">
                             <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
