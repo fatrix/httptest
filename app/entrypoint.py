@@ -30,7 +30,10 @@ def func(self):
         json_data.update({"version": version})
         json_data.update({"runs": []})
         self.datastore.write_dict(json_data)
-        return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
+        if self.settings.FRONTEND_API_URL:
+            return self.responses.RedirectResponse("/api/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
+        else:
+            return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
 
 
     if self.method == "GET" and self.GET.has_key("sendmail"):
@@ -39,7 +42,10 @@ def func(self):
             test_list = self.datastore.filter("email", data.data['email'])
             msg = ""
             for test in test_list:
-                testurl = "%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                if self.settings.FRONTEND_STATIC_URL:
+                    testurl = "%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                else:
+                    testurl = "%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                 msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
 
             from boto.ses import connect_to_region
