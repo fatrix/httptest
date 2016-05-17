@@ -49,6 +49,12 @@ $(document).ready(function() {
 		}
 	});
 
+    if (window.api_url == null){
+        base_url = '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/';
+    } else {
+        base_url = window.api_url;
+    }
+
 	$("button#runTest").click(function(e) {
 		e.preventDefault();
 		var url_data = $("input#url");
@@ -61,7 +67,7 @@ $(document).ready(function() {
 			error: function() {},
 			processData: false,
 			type: 'POST',
-			url: '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&testid=' + mytestid + "&version=" + version
+			url: base_url + '?data_from=payload&json=&testid=' + mytestid + "&version=" + version
 		});
 	});
 	$("button#reset").click(function(e) {
@@ -73,7 +79,7 @@ $(document).ready(function() {
 			error: function() {},
 			processData: false,
 			type: 'POST',
-			url: '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=reset&testid=' + mytestid + "&version=" + version
+			url: base_url + '?data_from=payload&json=&action=reset&testid=' + mytestid + "&version=" + version
 		});
 	});
 	$("button#delete").click(function(e) {
@@ -85,7 +91,7 @@ $(document).ready(function() {
 			error: function() {},
 			processData: false,
 			type: 'POST',
-			url: '/fastapp/api/base/httptest/apy/entrypoint/execute/?data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+			url: base_url + '?data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
 		});
 	});
 

@@ -44,6 +44,9 @@
 
     <script type="text/javascript">
         window.user = "{{RUNTIME_USER}}";
+        {% if FRONTEND_API_URL %}
+        window.api_url = "{{FRONTEND_API_URL}}";
+        {% endif %}
     </script>
 
 </head>
