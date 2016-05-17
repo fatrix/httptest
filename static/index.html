@@ -20,7 +20,13 @@
     <!-- jquery -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 
+    {% if FRONTEND_STATIC_URL %}
+    <script type="text/javascript" src="{{ FRONTEND_STATIC_URL }}js/httptest.js"></script>
+    <link rel="stylesheet" href="{{ FRONTEND_STATIC_URL }}css/httptest.css">
+    {% else %}
     <script type="text/javascript" src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
+    <link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
+    {% endif %}
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
