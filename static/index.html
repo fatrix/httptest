@@ -8,7 +8,7 @@
 
     <meta name="charset" content="ISO-8859-1" />
     <meta name="description" content="A Testing Tool for HTTP Responses" />
-    <meta name="keywords" content="Application Testing, HTTP Testing, Unittest, Python, Unittesting, Web, testing" />
+    <meta name="keywords" content="Application Testing, HTTP Testing, Unittest, Python, Unittesting, Web, testing, HTTP" />
     <meta name="copyright" content="Copyright © 2016 sahli.net" />
     <meta name="author" content="Philip Sahli" />
     <meta name="designer" content="Philip Sahli" />
@@ -91,7 +91,7 @@
         <div class="jumbotron">
             <h1>HTTPTest</h1>
             <h2>Testing Tool for HTTP</h1>
-            <p>Test HTTP Services in a declarative unittest like way with assert functions.</p>
+            <p>Declarative HTTP Endpoint testing with assert functions</p>
         </div>
     </div>
 
@@ -105,11 +105,11 @@
                 <!-- <h1 id="version"></h1> -->
                 <!--<a href="/fastapp/api/base/httptest/apy/entrypoint/execute/">Create new test</a>-->
                 {% if FRONTEND_API_URL %}
-                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Create new test</a>
-                <a target="_blank" id="sendmail" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Mail my links </a>
+                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Create new test »</a>
+                <a target="_blank" id="sendmail" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Mail my links »</a>
                 {% else %}
-                <a target="_blank" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Create new test</a>
-                <a target="_blank" id="sendmail" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary"><span class="glyphicon glyphicon-arrow-right"></span> Mail my links </a>
+                <a target="_blank" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Create new test »</a>
+                <a target="_blank" id="sendmail" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Mail my links »</a>
                 {% endif %}
                 <div>
                     <h3>Example Data</h3>

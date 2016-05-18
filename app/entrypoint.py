@@ -17,7 +17,6 @@ def func(self):
     if not version or "None" in version:
         version = DEFAULT_VERSION
 
-
     if id:
         data = self.datastore.get("testid", id)
         if not data:
@@ -34,8 +33,7 @@ def func(self):
             return self.responses.RedirectResponse("%s/api/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, new_id, version))
         else:
             return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
-
-
+    # sendmail
     if self.method == "GET" and self.GET.has_key("sendmail"):
         try:
             email = data.data['email']
@@ -53,7 +51,7 @@ def func(self):
             conn = connect_to_region('us-east-1', aws_access_key_id=self.settings.AWS_KEY, aws_secret_access_key=self.settings.AWS_SECRET)
             conn.send_email(
                     self.settings.EMAIL_SENDER, 
-                    "Subject", 
+                    "HTTPTest - Links for %s" % email, 
                     msg, 
                     [email]
                 )
@@ -61,27 +59,31 @@ def func(self):
         except Exception, e:
             self.error(self.rid, e.message)
             return self.responses.JSONResponse(json.dumps({"message": "error", "details": e.message}))
-        
+    
+    # redirect to static url
     elif self.method == "GET":
         if "FRONTEND_API_URL" in self.settings:
             return self.responses.RedirectResponse("%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
         else:
             return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
 
+    # reset
     elif self.method == "POST" and self.GET.get('action') == "reset":
         data.data['runs'] = []
         self.datastore.update(data)
         return self.responses.JSONResponse({'message': "reset"})
+    # delete
     elif self.method == "POST" and self.GET.get('action') == "delete":
         self.datastore.delete(data)
         return self.responses.JSONResponse({'message': "delete"})
+    # run
     elif self.method == "POST":
-        # update name
         name = self.POST.get("name", None)
         email = self.POST.get("email", None)
         config_url = self.POST.get("config_url", None)
         config_data = self.POST.get("config_data", None)
         save_data = self.POST.get("save_data", "no")
+        
         if config_url:
             r = requests.get(config_url, allow_redirects=True)
             body = r.text
@@ -95,6 +97,7 @@ def func(self):
             data.data['save_data'] = save_data
         else:
             data.data['config_data'] = ""
+            
         ALPHA = string.ascii_letters
         if body.startswith('"') and body.endswith('"'):
             body= body[1:-1]
@@ -102,6 +105,7 @@ def func(self):
             # JSON
             config = json.loads(body)
         elif body.startswith(tuple(ALPHA)):
+            # YAML
             import yaml
             config = yaml.load(body)
         else:
