@@ -30,7 +30,7 @@ def func(self):
         json_data.update({"version": version})
         json_data.update({"runs": []})
         self.datastore.write_dict(json_data)
-        if self.settings.FRONTEND_API_URL:
+        if "FRONTEND_API_URL" in self.settings:
             return self.responses.RedirectResponse("/api/?testid=%s&version=%s" % (new_id, version))
         else:
             return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
@@ -42,7 +42,7 @@ def func(self):
             test_list = self.datastore.filter("email", data.data['email'])
             msg = ""
             for test in test_list:
-                if self.settings.FRONTEND_STATIC_URL:
+                if "FRONTEND_API_URL" in self.settings:
                     testurl = "%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                 else:
                     testurl = "%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
@@ -63,7 +63,10 @@ def func(self):
             return self.responses.JSONResponse(json.dumps({"message": "error", "details": e.message}))
         
     elif self.method == "GET":
-        return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
+        if "FRONTEND_API_URL" in self.settings:
+            return self.responses.RedirectResponse("https://%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
+        else:
+            return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
 
     elif self.method == "POST" and self.GET.get('action') == "reset":
         data.data['runs'] = []
