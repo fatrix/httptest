@@ -31,7 +31,7 @@ def func(self):
         json_data.update({"runs": []})
         self.datastore.write_dict(json_data)
         if "FRONTEND_API_URL" in self.settings:
-            return self.responses.RedirectResponse("https://%s/api/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, new_id, version))
+            return self.responses.RedirectResponse("%s/api/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, new_id, version))
         else:
             return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
 
