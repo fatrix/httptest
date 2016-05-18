@@ -64,7 +64,7 @@ def func(self):
         
     elif self.method == "GET":
         if "FRONTEND_API_URL" in self.settings:
-            return self.responses.RedirectResponse("%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
+            return self.responses.RedirectResponse("%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
         else:
             return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
 
