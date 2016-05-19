@@ -41,9 +41,9 @@ def func(self):
             msg = ""
             for test in test_list:
                 if "FRONTEND_API_URL" in self.settings:
-                    testurl = "%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                 else:
-                    testurl = "%s/fastapp/httptest/static/index.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                 msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
 
             from boto.ses import connect_to_region
@@ -63,9 +63,9 @@ def func(self):
     # redirect to static url
     elif self.method == "GET":
         if "FRONTEND_API_URL" in self.settings:
-            return self.responses.RedirectResponse("%s/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
+            return self.responses.RedirectResponse("%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
         else:
-            return self.responses.RedirectResponse("/fastapp/httptest/static/index.html?testid=%s&version=%s" % (id, version))
+            return self.responses.RedirectResponse("/fastapp/httptest/static/test.html?testid=%s&version=%s" % (id, version))
 
     # reset
     elif self.method == "POST" and self.GET.get('action') == "reset":

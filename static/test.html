@@ -1,0 +1,105 @@
+{% extends "philipsahli:httptest:static/base.html" %}
+
+{% load humanize %}
+
+
+{% block body %}
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Heading Row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h1 id="testid"></h1>
+            </div>
+        <hr>
+        </div>
+            <!-- /.row -->
+
+        {% include "philipsahli:httptest:static/includes/adsense.html" %}
+
+        <div class="row">
+            <div class="col-md-8">
+                    {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} {% include "philipsahli:httptest:static/includes/form.html" with obj=obj %}
+            </div>
+        </div>
+
+        <hr>
+
+            <!-- Call to Action Well -->
+            <h2>Overview</h2>
+            <div class="well">
+                <div class="row-fluid">
+                    {% for run in obj.data.runs reversed %}
+                    <h4>{{ run.datetime }} <small><a href="#{{run.datetime}}">details</a></small></h4>
+                    <p>
+                        <span class="label label-success">success={{run.total.success}}</span>
+                        <span class="label label-warning">failures={{run.total.failures}}</span>
+                        <span class="label label-danger">errors={{run.total.errors}}</span>
+                        <span class="label label-default">skipped={{run.total.skipped}}</span>
+                    </p>
+                    {% empty %}
+                    <p>No runs yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <h2>Runs</h2> {% for run in obj.data.runs reversed %}
+            <div class="container well">
+                <div class="row-fluid">
+
+                    <h3 id="{{ run.datetime}}">{{ run.datetime }}</h3>
+                    <p>
+                        <span class="label label-success">success={{run.total.success}}</span>
+                        <span class="label label-warning">failures={{run.total.failures}}</span>
+                        <span class="label label-danger">errors={{run.total.errors}}</span>
+                        <span class="label label-default">skipped={{run.total.skipped}}</span>
+                    </p>
+
+
+                    <div class="col-md-4 smaller-text">
+                        <h3>Overview</h3>
+                            {% for url, l in run.result.items %} {% if l.success %}
+                            <div class="alert alert-success" role="alert">{{ url }} {% else %}
+                                <div class="alert alert-warning" role="alert">{{ url }} {% endif %}
+                                    <p>
+                                        <span class="label label-success">success={{l.result_counters.success}}</span>
+                                        <span class="label label-warning">failures={{l.result_counters.failures}}</span>
+                                        <span class="label label-danger">errors={{l.result_counters.errors}}</span>
+                                        <span class="label label-default">skipped={{l.result_counters.skipped}}</span>
+                                    </p>
+                                </div>
+                                {% endfor %}
+                        </div>
+                        <div class="col-md-8 smaller-text">
+                            <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
+                            <h4>{{ url }}</h4> {% for failure in l.failures %}
+                            <div class="alert alert-warning" role="alert">
+                                {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
+                                <h4>Headers</h4>
+                                <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
+                                <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                            </div>
+                            {% endfor %} {% for error in l.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
+                                <h4>Headers</h4>
+                                <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
+                                <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
+                            </div>
+                            {% endfor %}
+                            <!--{% for skipped in l.skipped %} 
+                    <div class="alert alert-info" role="alert">
+                        <p>URL:     {{skipped}}</p>
+                    </div>
+                {% endfor %}-->
+                            {% endif %} {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %} {% endifequal %} {% empty%}
+                <p>No runs yet</p>
+                {% endfor %}
+
+
+{% endblock %}

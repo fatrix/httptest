@@ -25,7 +25,7 @@ Depredicated.
 
 #### name
 
-The environment's name.
+The environment's `name`.
 
 #### base_url
 
