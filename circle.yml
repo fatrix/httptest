@@ -9,4 +9,4 @@ deployment:
   test:
     branch: master
     commands:
-      - pass
+      - echo "pass"
