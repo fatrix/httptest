@@ -1,8 +1,6 @@
-machine:
-  services:
-    - docker
 test:
   override:
+    - pip install Markdown==2.6.6
     - markdown_py -o html5 -f static/docs/usage.html docs/usage.md
     - git commit static/docs/usage.html -m "update docs [ci skip]"
 deployment:
