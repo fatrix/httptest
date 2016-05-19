@@ -4,7 +4,7 @@ test:
     - git config --global user.email "philip@sahli.net"
     - git config --global user.name "Philip Sahli"
     - markdown_py -o html5 -f static/docs/usage.html docs/usage.md
-    - git diff-index --quiet HEAD || git commit static/docs/usage.html -m "update docs [ci skip]"
+    - git commit static/docs/usage.html -m "update docs [ci skip]" || true
 deployment:
   test:
     branch: master
