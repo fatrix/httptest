@@ -74,17 +74,21 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
+                    {% if FRONTEND_STATIC_URL %}
                     <li>
-                        {% if FRONTEND_STATIC_URL %}
                         <a href="/usage.html">Usage</a>
-                        {% else %}
-                        <a href="{{ FASTAPP_STATIC_URL}}usage.html">Usage</a>
-                        {% endif %}
-
                     </li>
                     <li>
-                        <a href="#">About</a>
+                        <a href="/about.html">About</a>
                     </li>
+                    {% else %}
+                    <li>
+                        <a href="{{ FASTAPP_STATIC_URL}}usage.html">Usage</a>
+                    </li>
+                    <li>
+                        <a href="{{ FASTAPP_STATIC_URL}}about.html">About</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
