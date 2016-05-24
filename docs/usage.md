@@ -1,4 +1,4 @@
-The HTTPTest Tool helps to send various requests to multiple environment. Example, you need to test the following URLs:
+The HTTPTest Tool helps to send various **requests** to multiple **environments**. For example, you want to test the following URLs:
 
     GET http://test.example.com/blog HTTP/1.1                (200 expected)
     GET http://test.example.com/private HTTP/1.1             (301 expected)
@@ -11,13 +11,29 @@ The HTTPTest Tool helps to send various requests to multiple environment. Exampl
     
     GET https://example.com/private HTTP/1.1                 (200 expected)
     GET https://example.com/blog HTTP/1.1                    (301 expected)
-    
 
-# V1
+The following configuration would achieve this.
 
-Depredicated.
-
-# V2
+    environments:
+        - name:      test
+          base_url:  http://test.example.com
+        - name:      public
+          base_url:  http://example.com
+        - name:      test-ssl
+          base_url:  https://test.example.com
+        - name:      public-ssl
+          base_url:  https://example.com
+    tests:
+        - name:     test_blog
+          uri:      /blog
+          asserts:
+              assert_status_code_is: 200
+              assert_body_contains:  "My Blog"
+        - name:     test_private
+          uri:      /private
+          asserts:
+              assert_status_code_is: 301
+              assert_body_contains:  "Login"
 
 ## Configuration
 
@@ -59,17 +75,22 @@ With the key `skip` the entire request or all requests to an environment will be
 
 ### timeout
 
-Value in seconds. `timeout` must be less than 20s.
+Value in seconds. Default is 10 seconds. `timeout` must be less than 20s.
 
 ### headers
 
 Custom headers as key/value to send with the request.
 
-### assert_status_code_is
-### assert_status_code_is_not
-### assert_header_is_set
-### assert_header_is_not_set
-### assert_header_value_contains
-### assert_header_value_not_contains
-### assert_body_contains
-### assert_is_json
+     headers:
+        MY-1HEADER: headers value
+        MY-2HEADER: headers value
+
+### asserts
+#### assert_status_code_is
+#### assert_status_code_is_not
+#### assert_header_is_set
+#### assert_header_is_not_set
+#### assert_header_value_contains
+#### assert_header_value_not_contains
+#### assert_body_contains
+#### assert_is_json

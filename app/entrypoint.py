@@ -111,7 +111,7 @@ def func(self):
         else:
             raise Exception("Missing data, body was: "+body )
 
-        results, total_counter =  httptest.func(self, config, True)
+        results, total_counter =  httptest.func(self, config, version, True)
         runs = {
               'result': results,
               'total': total_counter,

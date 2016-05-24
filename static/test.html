@@ -76,16 +76,32 @@
                             <h4>{{ url }}</h4> {% for failure in l.failures %}
                             <div class="alert alert-warning" role="alert">
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
-                                <h4>Headers</h4>
-                                <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
-                                <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
+                                <div id="{{failure.id}}headers" class="collapse">
+                                    <h4>Headers</h4>
+                                    <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
+                                    <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                                </div>
+                                <div id="{{failure.id}}body" class="collapse">
+                                    <h4>Response Body</h4>
+                                    <p><code>{{failure.response_text}}</code></p>
+                                </div>
                             </div>
                             {% endfor %} {% for error in l.errors %}
                             <div class="alert alert-danger" role="alert">
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
-                                <h4>Headers</h4>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show headers</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show response text</button>
+                                <div id="{{error.id}}headers" class="collapse">
                                 <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
                                 <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
+                                </div>
+
+                                <div id="{{error.id}}body" class="collapse">
+                                    <h4>Response Body</h4>
+                                    <p><code>{{error.response_text}}</code></p>
+                                </div>
                             </div>
                             {% endfor %}
                             <!--{% for skipped in l.skipped %} 

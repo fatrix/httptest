@@ -1,4 +1,4 @@
-<p>The HTTPTest Tool helps to send various requests to multiple environment. Example, you need to test the following URLs:</p>
+<p>The HTTPTest Tool helps to send various <strong>requests</strong> to multiple <strong>environments</strong>. For example, you want to test the following URLs:</p>
 <pre><code>GET http://test.example.com/blog HTTP/1.1                (200 expected)
 GET http://test.example.com/private HTTP/1.1             (301 expected)
 
@@ -11,9 +11,28 @@ GET http://example.com/private HTTP/1.1                  (301 expected)
 GET https://example.com/private HTTP/1.1                 (200 expected)
 GET https://example.com/blog HTTP/1.1                    (301 expected)
 </code></pre>
-<h1>V1</h1>
-<p>Depredicated.</p>
-<h1>V2</h1>
+<p>The following configuration would achieve this.</p>
+<pre><code>environments:
+    - name:      test
+      base_url:  http://test.example.com
+    - name:      public
+      base_url:  http://example.com
+    - name:      test-ssl
+      base_url:  https://test.example.com
+    - name:      public-ssl
+      base_url:  https://example.com
+tests:
+    - name:     test_blog
+      uri:      /blog
+      asserts:
+          assert_status_code_is: 200
+          assert_body_contains:  "My Blog"
+    - name:     test_private
+      uri:      /private
+      asserts:
+          assert_status_code_is: 301
+          assert_body_contains:  "Login"
+</code></pre>
 <h2>Configuration</h2>
 <h3>environment</h3>
 <h4>name</h4>
@@ -34,14 +53,19 @@ GET https://example.com/blog HTTP/1.1                    (301 expected)
 <h3>ssl_verify</h3>
 <p><code>ssl_verify</code> disables SSL certificate check.</p>
 <h3>timeout</h3>
-<p>Value in seconds. <code>timeout</code> must be less than 20s.</p>
+<p>Value in seconds. Default is 10 seconds. <code>timeout</code> must be less than 20s.</p>
 <h3>headers</h3>
 <p>Custom headers as key/value to send with the request.</p>
-<h3>assert_status_code_is</h3>
-<h3>assert_status_code_is_not</h3>
-<h3>assert_header_is_set</h3>
-<h3>assert_header_is_not_set</h3>
-<h3>assert_header_value_contains</h3>
-<h3>assert_header_value_not_contains</h3>
-<h3>assert_body_contains</h3>
-<h3>assert_is_json</h3>
+<pre><code> headers:
+    MY-1HEADER: headers value
+    MY-2HEADER: headers value
+</code></pre>
+<h3>asserts</h3>
+<h4>assert_status_code_is</h4>
+<h4>assert_status_code_is_not</h4>
+<h4>assert_header_is_set</h4>
+<h4>assert_header_is_not_set</h4>
+<h4>assert_header_value_contains</h4>
+<h4>assert_header_value_not_contains</h4>
+<h4>assert_body_contains</h4>
+<h4>assert_is_json</h4>
