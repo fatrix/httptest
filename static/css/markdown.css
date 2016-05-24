@@ -2,13 +2,13 @@ h1:after {
     content:' ';
     display:block;
     margin-top: 10px;
-    border:2px solid black;
+    border:1px solid darkgrey;
 }
 h2:after {
     content:' ';
     display:block;
     margin-top: 10px;
-    border:1px solid grey;
+    border:0.7px solid grey;
 }
 h3:after {
     content:' ';
