@@ -10,7 +10,7 @@ def func(self):
 
     id = self.GET.get("testid", None)
 
-    DEFAULT_VERSION = 1
+    DEFAULT_VERSION = 2
 
     version = self.GET.get("version", None)
     # default version
