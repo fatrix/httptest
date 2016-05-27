@@ -21,23 +21,11 @@ def func(self):
         data = self.datastore.get("testid", id)
         if not data:
             raise Exception("Not found")
-    else:
-        # create new test
-        new_id=''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
-        json_data = {}
-        json_data.update({"testid": new_id})
-        json_data.update({"version": version})
-        json_data.update({"runs": []})
-        self.datastore.write_dict(json_data)
-        if "FRONTEND_API_URL" in self.settings:
-            return self.responses.RedirectResponse("%s/api/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, new_id, version))
-        else:
-            return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
     # sendmail
-    if self.method == "GET" and self.GET.has_key("sendmail"):
+    elif self.method == "GET" and self.GET.has_key("sendmail"):
         try:
-            email = data.data['email']
-            test_list = self.datastore.filter("email", data.data['email'])
+            email = self.GET.get('email')
+            test_list = self.datastore.filter("email", email)
             msg = ""
             for test in test_list:
                 if "FRONTEND_API_URL" in self.settings:
@@ -127,3 +115,16 @@ def func(self):
             data.data['runs'] = [runs]
         self.datastore.update(data)
         return self.responses.JSONResponse(json.dumps({"message": "runs", 'runs_count': len(data.data['runs'])}))
+    else:
+        # create new test
+        new_id=''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
+        json_data = {}
+        json_data.update({"testid": new_id})
+        json_data.update({"version": version})
+        json_data.update({"runs": []})
+        self.datastore.write_dict(json_data)
+        if "FRONTEND_API_URL" in self.settings:
+            return self.responses.RedirectResponse("%s/api/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, new_id, version))
+        else:
+            return self.responses.RedirectResponse("/fastapp/api/username/%s/base/httptest/apy/entrypoint/execute/?testid=%s&version=%s" % (self.settings.RUNTIME_USER, new_id, version))
+

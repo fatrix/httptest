@@ -38,9 +38,10 @@ $(document).ready(function() {
 	$("h1#testid").text(mytestid);
 	// $("h1#version").text("RUNTIME-VERSION: " + version);
 
-	var x = $('a#sendmail').attr('href');
-	$('a#sendmail').attr('href',x+"?sendmail&testid="+mytestid);
-
+    $( "button#sendmail" ).click(function() {
+        email = $("#email").val();
+       window.open(base_url+"?sendmail&email="+email);
+    });
 
 	csrftoken = $("input[name*='csrfmiddlewaretoken'").attr("value");
 	$.ajaxSetup({
