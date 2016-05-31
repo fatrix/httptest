@@ -57,10 +57,11 @@
       base_url: "https://sahli.net"
     - name: "tumbo.io"
       base_url: "https://tumbo.io"
-requests:
+tests:
     - name: "test_home"
       uri: "/"
-      status_code: 200</code>
+      asserts:
+         assert_status_code_is: 200</code>
                         </div>
                     </div>
                 </div>
