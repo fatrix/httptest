@@ -82,15 +82,48 @@ Value in seconds. Default is 10 seconds. `timeout` must be less than 20s.
 Custom headers as key/value to send with the request.
 
      headers:
-        MY-1HEADER: headers value
-        MY-2HEADER: headers value
+        MY-1HEADER: value1
+        MY-2HEADER: value2
 
 ### asserts
+
 #### assert_status_code_is
+Expects the response status code
+
+    assert_status_code_is: 200
+
 #### assert_status_code_is_not
+Expects the response status code is not
+
+    assert_status_code_is_not: 500
+
 #### assert_header_is_set
+Expects a response header is set
+
+    assert_header_is_set: My-Header
+
 #### assert_header_is_not_set
+Expects a response header is not set
+
+    assert_header_is_not_set: My-Header
+
 #### assert_header_value_contains
-#### assert_header_value_not_contains
+Expects a response header contains a string in the value
+
+    assert_header_value_contains:
+      My-Header: Hello 
+
 #### assert_body_contains
+Expects the body contains a string
+
+    assert_body_contains: Hello World
+
 #### assert_is_json
+Expects the response is parseable as JSON.
+
+    assert_is_json
+
+#### assert_is_not_json
+Expects the response is not parseable as JSON.
+
+    assert_is_not_json

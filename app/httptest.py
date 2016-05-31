@@ -115,14 +115,14 @@ def func(self, data, version, response_obj=None):
             ssl_verify
             headers
 
-            assert_status_code_is
-            assert_status_code_is_not
-            assert_header_is_set
-            assert_header_is_not_set
-            assert_header_value_contains
-            assert_header_value_not_contains
-            assert_body_contains
-            assert_is_json
+            - assert_status_code_is
+            - assert_status_code_is_not
+            - assert_header_is_set
+            - assert_header_is_not_set
+            - assert_header_value_contains
+            - assert_body_contains
+            - assert_is_json
+            - assert_is_not_json
             """
             if self.kwargs.get('skip', None):
                 raise unittest.SkipTest("test marked as skip (%s)" % self.url)
@@ -135,18 +135,29 @@ def func(self, data, version, response_obj=None):
                 if self.assert_key == "assert_status_code_is_not":
                     assert int(self.assert_value) != self.response.status_code, "%s is %s (%s)" % (self.assert_value, self.response.status_code, self.response.text[:240])
                 if self.assert_key == "assert_body_contains":
-                    assert self.assert_value in self.response.text, "String %s not in %s" % (self.assert_value, self.response.text[:240])
+                    assert self.assert_value in self.response.text, "assert_body_contains failed, string %s not in %s" % (self.assert_value, self.response.text[:240])
+
                 if self.assert_key == "assert_is_json":
                     try:
                         self.response.json()
                     except:
                         raise AssertionError("assert_is_json evaluated to false, should be true")
+
                 if self.assert_key == "assert_is_not_json":
                     try:
                         self.response.json()
                         raise AssertionError("assert_is_json evaluated to true, should be false")
                     except:
                         pass
+
+                if self.assert_key == "assert_header_is_set":
+                    header = self.assert_value
+                    assert header in self.response.headers.keys(), "assert_header_is_set failed, header '%s' is missing" % header
+
+                if self.assert_key == "assert_header_is_not_set":
+                    header = self.assert_value
+                    assert header not in self.response.headers.keys(), "assert_header_is_not_set failed, header '%s' is set" % header
+
 
                 if self.assert_key == "assert_header_value_contains":
                     headers = self.assert_value
