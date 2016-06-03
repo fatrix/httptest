@@ -68,8 +68,12 @@ table {
 textarea {
   border:1px solid #999999;
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+  font-size: 12px !important
 }
 .addsense {
     margin-top: 25px;
     margin-bottom: 25px;
+}
+#buttons > div {
+    margin-top: 10px;
 }

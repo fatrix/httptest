@@ -75,6 +75,7 @@
                             <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
                             <h4>{{ url }}</h4> {% for failure in l.failures %}
                             <div class="alert alert-warning" role="alert">
+                                <h5>{{failure.message}}</h5>
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
@@ -90,6 +91,7 @@
                             </div>
                             {% endfor %} {% for error in l.errors %}
                             <div class="alert alert-danger" role="alert">
+                                <h5>{{error.message}}</h5>
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show headers</button>
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show response text</button>

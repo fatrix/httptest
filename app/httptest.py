@@ -68,13 +68,13 @@ def func(self, data, version, response_obj=None):
             self.verify = self.kwargs.get('ssl_verify', True)
             try:
                 self._send_request()
-                assert int(self.status_code) == self.response.status_code, "%s is not %s (%s)" % (self.status_code, self.response.status_code, self.response.text[:240])
+                assert int(self.status_code) == self.response.status_code, "%s is not %s" % (self.status_code, self.response.status_code)
                 if self.type:
                     response_type = eval(self.type.replace("<", "").replace(">", ""))
                     #info(rid, str(response_type))
                     assert response_type == type(self.response.json()), "Wrong response type"
                 if self.pattern:
-                    assert self.pattern in self.response.text, self.pattern + " not in response (%s)" % self.response.text[:240]
+                    assert self.pattern in self.response.text, self.pattern + " not found in response body" % self.pattern
             except AssertionError, e:
                 #warn(rid, "%s: %s (%s)" % (self.url, str(e.message), self.response.text[:60]))
                 self.error = e.message
@@ -131,11 +131,11 @@ def func(self, data, version, response_obj=None):
                 self._send_request()
                 self.response_text = self.response.text
                 if self.assert_key == "assert_status_code_is":
-                    assert int(self.assert_value) == self.response.status_code, "%s is not %s (%s)" % (self.assert_value, self.response.status_code, self.response.text[:240])
+                    assert int(self.assert_value) == self.response.status_code, "%s is not %s" % (self.assert_value, self.response.status_code)
                 if self.assert_key == "assert_status_code_is_not":
-                    assert int(self.assert_value) != self.response.status_code, "%s is %s (%s)" % (self.assert_value, self.response.status_code, self.response.text[:240])
+                    assert int(self.assert_value) != self.response.status_code, "%s is %s" % (self.assert_value, self.response.status_code)
                 if self.assert_key == "assert_body_contains":
-                    assert self.assert_value in self.response.text, "assert_body_contains failed, string %s not in %s" % (self.assert_value, self.response.text[:240])
+                    assert self.assert_value in self.response.text, "assert_body_contains failed, string %s not found in response body" % (self.assert_value)
 
                 if self.assert_key == "assert_is_json":
                     try:

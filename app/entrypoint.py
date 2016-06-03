@@ -27,12 +27,15 @@ def func(self):
             email = self.GET.get('email')
             test_list = self.datastore.filter("email", email)
             msg = ""
-            for test in test_list:
-                if "FRONTEND_API_URL" in self.settings:
-                    testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
-                else:
-                    testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
-                msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
+            if len(test_list) > 0:
+                for test in test_list:
+                    if "FRONTEND_API_URL" in self.settings:
+                        testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    else:
+                        testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
+            else:
+                msg = "No test found"
 
             from boto.ses import connect_to_region
 
