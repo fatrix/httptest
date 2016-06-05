@@ -97,6 +97,7 @@ def func(self):
             data.data['save_data'] = save_data
         else:
             data.data['config_data'] = ""
+            data.data['save_data'] = "no"
 
         ALPHA = string.ascii_letters
         if body.startswith('"') and body.endswith('"'):

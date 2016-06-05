@@ -39,8 +39,41 @@ $(document).ready(function() {
     // $("h1#version").text("RUNTIME-VERSION: " + version);
 
     $( "button#sendmail" ).click(function() {
+
+        $(this).prop('disabled', true);
+        $("#email").prop('disabled', true);
+
+        var that = this;
         email = $("#email").val();
-       window.open(base_url+"?sendmail&email="+email);
+        //window.open(base_url+"?sendmail&email="+email);
+        email_url = base_url+"?sendmail&email="+email;
+
+
+        $.ajax({
+            success: function(data) {
+                $(that).text("Mail sent")
+                $(that).removeClass("btn-primary");
+                $(that).addClass("btn-success");
+                $("#email").val("");
+            },
+            error: function(xhr) {
+                $(that).prop('disabled', false);
+                $("#email").prop('disabled', false);
+                $(that).text("ErroErrorr")
+            },
+            processData: false,
+            type: 'GET',
+            url: email_url
+        });
+ 
+
+
+
+
+
+
+
+
     });
 
     csrftoken = $("input[name*='csrfmiddlewaretoken'").attr("value");

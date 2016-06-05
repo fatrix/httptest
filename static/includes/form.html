@@ -35,7 +35,11 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="save_data">Save Data</label>
   <div class="col-md-8">                     
-    <input type="checkbox" name="save_data" id="save_data" value="yes" checked>
+    {% ifequal obj.data.save_data "yes" %}
+        <input type="checkbox" name="save_data" id="save_data" value="yes" checked>
+    {% else %}
+        <input type="checkbox" name="save_data" id="save_data" value="{{obj.data.save_data}}">
+    {% endifequal %}
     <span class="help-block">Config data is saved for later usage.</span>  
   </div>
 </div>

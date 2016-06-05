@@ -38,7 +38,7 @@ footer {
   margin-top: 30px !important
 }
 .smaller-text {
-	font-size: small;
+    font-size: small;
 }
 code { white-space: pre; }
 
@@ -57,13 +57,15 @@ code
     box-shadow: 0 0 2px black;
 }
 td.value, td.name {
-	font-family: Menlo, Monaco, Consolas, 'Courier New', monospace 
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace 
 }
-table {
-	font-size: 0.8em;
+table, div.collapse > p > code {
+    font-size: 0.8em;
+    content: counter(linenumbers);
+    counter-increment: linenumbers;
 }
 .form-group {
-	padding-bottom:10px;
+    padding-bottom:10px;
 }
 textarea {
   border:1px solid #999999;
