@@ -1,6 +1,7 @@
 {% extends "philipsahli:httptest:static/base.html" %}
 
 {% load humanize %}
+{% load cache %}
 
 
 {% block body %}
@@ -16,7 +17,9 @@
         </div>
             <!-- /.row -->
 
+        {% cache 1000 httptest philipsahli adsense %}
         {% include "philipsahli:httptest:static/includes/adsense.html" %}
+        {% endcache %}
 
         <div class="row">
             <div class="col-md-8">
@@ -45,6 +48,7 @@
             </div>
 
             <h2>Runs</h2> {% for run in obj.data.runs reversed %}
+            {% cache 500 run.datetime obj.data.testid %}
             <div class="container well">
                 <div class="row-fluid">
 
@@ -115,6 +119,7 @@
                         </div>
                     </div>
                 </div>
+                {% endcache %}
                 {% endfor %} {% endifequal %} {% empty%}
                 <p>No runs yet</p>
                 {% endfor %}
