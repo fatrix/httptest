@@ -48,7 +48,7 @@
             </div>
 
             <h2>Runs</h2> {% for run in obj.data.runs reversed %}
-            {% cache 500 run.datetime obj.data.testid %}
+            {% cache 500 run obj.data.testid run.datetime %}
             <div class="container well">
                 <div class="row-fluid">
 
