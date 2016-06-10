@@ -3,6 +3,8 @@ def func(self, data, version, response_obj=None):
     import requests
     import json
     import re
+    import string
+    import random
     from multiprocessing.pool import ThreadPool
 
     info = self.info
@@ -185,12 +187,17 @@ def func(self, data, version, response_obj=None):
         for env in environments:
             request.update(env)
             request['url'] = env['base_url']+request['uri']
+            variables = env.get('variables', {})
+            for var_k, var_v in variables.iteritems():
+                request['url'] = request['url'].replace("{{%s}}" % var_k, var_v)
+                print "*******"
+                print request['url']
+                print "*******"
             request['env_name'] = env['name']
             if version == 1:
                 tests.append(HTTPTest(**request))
             elif version == 2:
                 for test_assert in request['asserts'].iteritems():
-                    import string, random
                     N = 5
                     id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
                     tests.append(HTTPTestV2(id, test_assert, **request))

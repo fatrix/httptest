@@ -47,6 +47,24 @@ The environment's `name`.
 
 `base_url` gets prepended to the `uri` in the test definition.
 
+#### variables
+
+Environment specific values in URI's can be set per environment as variables:
+
+For environment `A`:
+
+    variables:
+        KEY: 1234
+
+For environment `B`:
+
+    variables:
+        KEY: 5678
+
+`uri` in test:
+
+    uri: /api/key/{{KEY}}
+
 ### tests
 
 The array tests contains the definition of test cases.
