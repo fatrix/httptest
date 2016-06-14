@@ -39,6 +39,19 @@ tests:
 <p>The environment's <code>name</code>.</p>
 <h4>base_url</h4>
 <p><code>base_url</code> gets prepended to the <code>uri</code> in the test definition.</p>
+<h4>variables</h4>
+<p>Environment specific values in URI's can be set per environment as variables:</p>
+<p>For environment <code>A</code>:</p>
+<pre><code>variables:
+    KEY: 1234
+</code></pre>
+<p>For environment <code>B</code>:</p>
+<pre><code>variables:
+    KEY: 5678
+</code></pre>
+<p><code>uri</code> in test:</p>
+<pre><code>uri: /api/key/{{KEY}}
+</code></pre>
 <h3>tests</h3>
 <p>The array tests contains the definition of test cases.</p>
 <h4>name</h4>
@@ -47,7 +60,7 @@ tests:
 <p>The path to send the request to.</p>
 <h4>method</h4>
 <p>Default: <code>GET</code></p>
-<p>If POST, you can define the data (JSON format) in the key <code>data</code>. If the data is recognized as URL (starting with http), the data is loaded from this URL.</p>
+<p>If POST, you can define the data (JSON format) in the key <code>data</code>. If the data is recognized as URL (starting with <code>http</code>), the data is loaded from this URL.</p>
 <h3>skip</h3>
 <p>With the key <code>skip</code> the entire request or all requests to an environment will be skipped. A value is optional and can contain any reason.</p>
 <h3>ssl_verify</h3>
