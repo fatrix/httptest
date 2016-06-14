@@ -1,0 +1,109 @@
+<p>The HTTPTest Tool helps to send various <strong>requests</strong> to multiple <strong>environments</strong>. For example, you want to test the following URLs:</p>
+<pre><code>GET http://test.example.com/blog HTTP/1.1                (200 expected)
+GET http://test.example.com/private HTTP/1.1             (301 expected)
+
+GET https://test.example.com/private HTTP/1.1            (200 expected)
+GET https://test.example.com/blog HTTP/1.1               (301 expected)
+
+GET http://example.com/blog HTTP/1.1                     (200 expected)
+GET http://example.com/private HTTP/1.1                  (301 expected)
+
+GET https://example.com/private HTTP/1.1                 (200 expected)
+GET https://example.com/blog HTTP/1.1                    (301 expected)
+</code></pre>
+<p>The following configuration would achieve this.</p>
+<pre><code>environments:
+    - name:      test
+      base_url:  http://test.example.com
+    - name:      public
+      base_url:  http://example.com
+    - name:      test-ssl
+      base_url:  https://test.example.com
+    - name:      public-ssl
+      base_url:  https://example.com
+tests:
+    - name:     test_blog
+      uri:      /blog
+      asserts:
+          assert_status_code_is: 200
+          assert_body_contains:  "My Blog"
+    - name:     test_private
+      uri:      /private
+      asserts:
+          assert_status_code_is: 301
+          assert_body_contains:  "Login"
+</code></pre>
+<h2>Configuration</h2>
+<h3>environment</h3>
+<h4>name</h4>
+<p>The environment's <code>name</code>.</p>
+<h4>base_url</h4>
+<p><code>base_url</code> gets prepended to the <code>uri</code> in the test definition.</p>
+<h4>variables</h4>
+<p>Environment specific values in URI's can be set per environment as variables:</p>
+<p>For environment <code>A</code>:</p>
+<pre><code>variables:
+    KEY: 1234
+</code></pre>
+<p>For environment <code>B</code>:</p>
+<pre><code>variables:
+    KEY: 5678
+</code></pre>
+<p><code>uri</code> in test:</p>
+<pre><code>uri: /api/key/{% verbatim %}{{KEY}}{% endverbatim %}
+</code></pre>
+<h3>tests</h3>
+<p>The array tests contains the definition of test cases.</p>
+<h4>name</h4>
+<p>The <code>name</code> must start with <code>test_</code>.</p>
+<h4>uri</h4>
+<p>The path to send the request to.</p>
+<h4>method</h4>
+<p>Default: <code>GET</code></p>
+<p>If POST, you can define the data (JSON format) in the key <code>data</code>. If the data is recognized as URL (starting with <code>http</code>), the data is loaded from this URL.</p>
+<h3>skip</h3>
+<p>With the key <code>skip</code> the entire request or all requests to an environment will be skipped. A value is optional and can contain any reason.</p>
+<h3>ssl_verify</h3>
+<p><code>ssl_verify</code> disables SSL certificate check.</p>
+<h3>timeout</h3>
+<p>Value in seconds. Default is 10 seconds. <code>timeout</code> must be less than 20s.</p>
+<h3>headers</h3>
+<p>Custom headers as key/value to send with the request.</p>
+<pre><code> headers:
+    MY-1HEADER: value1
+    MY-2HEADER: value2
+</code></pre>
+<h3>asserts</h3>
+<h4>assert_status_code_is</h4>
+<p>Expects the response status code</p>
+<pre><code>assert_status_code_is: 200
+</code></pre>
+<h4>assert_status_code_is_not</h4>
+<p>Expects the response status code is not</p>
+<pre><code>assert_status_code_is_not: 500
+</code></pre>
+<h4>assert_header_is_set</h4>
+<p>Expects a response header is set</p>
+<pre><code>assert_header_is_set: My-Header
+</code></pre>
+<h4>assert_header_is_not_set</h4>
+<p>Expects a response header is not set</p>
+<pre><code>assert_header_is_not_set: My-Header
+</code></pre>
+<h4>assert_header_value_contains</h4>
+<p>Expects a response header contains a string in the value</p>
+<pre><code>assert_header_value_contains:
+  My-Header: Hello
+</code></pre>
+<h4>assert_body_contains</h4>
+<p>Expects the body contains a string</p>
+<pre><code>assert_body_contains: Hello World
+</code></pre>
+<h4>assert_is_json</h4>
+<p>Expects the response is parseable as JSON.</p>
+<pre><code>assert_is_json
+</code></pre>
+<h4>assert_is_not_json</h4>
+<p>Expects the response is not parseable as JSON.</p>
+<pre><code>assert_is_not_json
+</code></pre>
