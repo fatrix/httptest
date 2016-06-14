@@ -6,6 +6,7 @@ test:
     - markdown_py -o html5 -f static/docs/usage.html docs/usage.md
     - markdown_py -o html5 -f static/includes/about.html docs/about.md
     - git commit static/docs/* -m "update docs [ci skip]" || true
+    - git push
 deployment:
   test:
     branch: master
