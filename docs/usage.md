@@ -63,7 +63,7 @@ For environment `B`:
 
 `uri` in test:
 
-    uri: /api/key/{{KEY}}
+    uri: /api/key/{% verbatim %}{{KEY}}{% endverbatim %}
 
 ### tests
 
