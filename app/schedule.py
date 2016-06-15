@@ -13,7 +13,8 @@ def func(self):
         result = json.loads(r.json()['returned']['content'])
         results.append(result)
         result_counters = result['message'][1]
-        datetime = result['message'][2]
+        #datetime = result['message'][2]
+        datetime = None
 
         failure_count_after = result_counters['failures'] + result_counters['errors']
 
