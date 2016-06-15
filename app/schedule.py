@@ -7,7 +7,7 @@ def func(self):
     for test in tests:
         failure_count_before = test.data['runs'][-1]['total']['failures'] + test.data['runs'][-1]['total']['errors']
 
-        r = requests.post("https://codeanywhere.sahli.net/fastapp/api/username/admin/base/httptest/apy/entrypoint/execute/?json=&from_store&testid=%s" % test.data['testid'])
+        r = requests.post("%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid']))
         result = json.loads(r.json()['returned']['content'])
         results.append(result)
         result_counters = result['message'][1]
