@@ -19,7 +19,7 @@ def func(self):
         send_alarm=False
         send_recover=False
 
-        print "Diff %s to %s" % (failure_count_before, failure_count_after)
+        self.info(self.rid, "Diff %s to %s" % (failure_count_before, failure_count_after))
         if failure_count_before < failure_count_after:
             send_alarm=True
             subject = "HTTPTest - Test '%s' failed on %s" % (test.data['name'], test.data['datetime'])
@@ -29,7 +29,9 @@ def func(self):
             subject = "HTTPTest - Test '%s' recovered on %s" % (test.data['name'], test.data['datetime'])
             msg = "Test %s recovered" % (test.data['name'])
 
+        self.info(self.rid, "%s %s" % (str(send_alarm), str(send_recover)))
         if send_alarm or send_recover:
-           utils.sendmail(self, test.data['email'], subject, msg)
+            self.info(self.rid, "Send Mail to %s" % test.data['email'])
+            utils.sendmail(self, test.data['email'], subject, msg)
 
     return results
