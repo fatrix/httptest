@@ -14,7 +14,7 @@ def func(self):
         results.append(result)
         result_counters = result['message'][1]
         #datetime = result['message'][2]
-        datetime = None
+        #datetime = None
 
         failure_count_after = result_counters['failures'] + result_counters['errors']
 
@@ -24,11 +24,13 @@ def func(self):
         self.info(self.rid, "Diff %s to %s" % (failure_count_before, failure_count_after))
         if failure_count_before < failure_count_after:
             send_alarm=True
-            subject = "HTTPTest - Test '%s' failed on %s" % (test.data['name'], datetime)
+            #subject = "HTTPTest - Test '%s' failed on %s" % (test.data['name'], datetime)
+            subject = "HTTPTest - Test '%s' failed (%s)" % (test.data['name'], result_counters)
             msg = "Test %s failed" % (test.data['name'])
         elif failure_count_after == 0 and failure_count_before is not failure_count_after:
             send_recover=True
-            subject = "HTTPTest - Test '%s' recovered on %s" % (test.data['name'], datetime)
+            #subject = "HTTPTest - Test '%s' recovered on %s" % (test.data['name'], datetime)
+            subject = "HTTPTest - Test '%s' recovered (%s)" % (test.data['name'], result_counters)
             msg = "Test %s recovered" % (test.data['name'])
 
         self.info(self.rid, "%s %s" % (str(send_alarm), str(send_recover)))
