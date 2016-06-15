@@ -43,6 +43,18 @@
     <span class="help-block">Config data is saved for later usage.</span>  
   </div>
 </div>
+<div class="form-group">
+  <label class="col-md-4 control-label" for="schedule">Auto-Run</label>
+  <div class="col-md-8">                     
+    {% ifequal obj.data.schedule "yes" %}
+        <input type="checkbox" name="schedule" id="schedule" value="yes" checked>
+    {% else %}
+        <input type="checkbox" name="schedule" id="schedule" value="yes">
+    {% endifequal %}
+    <span class="help-block">Run test automatically every 15 minutes.</span>  
+  </div>
+</div>
+
 
 <!-- Text input-->
 <div class="form-group">

@@ -207,7 +207,7 @@ def func(self, data, version, response_obj=None):
         return suite
 
     result_list = {}
-    env_pool = ThreadPool(processes=1)
+    env_pool = ThreadPool(processes=5)
     def run_test(*args):
         request = args[0]
         environments= args[1]

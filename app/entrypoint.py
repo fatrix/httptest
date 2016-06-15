@@ -78,17 +78,27 @@ def func(self):
         return self.responses.JSONResponse({'message': "delete"})
     # run
     elif self.method == "POST":
-        name = self.POST.get("name", None)
-        email = self.POST.get("email", None)
-        config_url = self.POST.get("config_url", None)
-        config_data = self.POST.get("config_data", None)
-        save_data = self.POST.get("save_data", "no")
+        if not self.GET.has_key("from_store"):
+            name = self.POST.get("name", None)
+            config_data = self.POST.get("config_data", None)
+            save_data = self.POST.get("save_data", "no")
+            schedule = self.POST.get("schedule", "no")
+            config_url = self.POST.get("config_url", None)
+            email = self.POST.get("email", None)
+        else:
+            name = data.data['name']
+            config_data = data.data['config_data']
+            save_data = data.data['save_data']
+            schedule = data.data['schedule']
+            config_url = data.data["config_url"]
+            email = data.data["email"]
 
         if config_url:
             r = requests.get(config_url, allow_redirects=True)
             body = r.text
         else:
             body = config_data
+
         data.data['config_url'] = config_url
         data.data['name'] = name
         data.data['email'] = email
@@ -98,6 +108,10 @@ def func(self):
         else:
             data.data['config_data'] = ""
             data.data['save_data'] = "no"
+        if "yes" in schedule:
+            data.data['schedule'] = schedule
+        else:
+            data.data['schedule'] = "no"
 
         ALPHA = string.ascii_letters
         if body.startswith('"') and body.endswith('"'):
@@ -127,4 +141,4 @@ def func(self):
         else:
             data.data['runs'] = [runs]
         self.datastore.update(data)
-        return self.responses.JSONResponse(json.dumps({"message": "runs", 'runs_count': len(data.data['runs'])}))
+        return self.responses.JSONResponse(json.dumps({"message": (results, total_counter), 'runs_count': len(data.data['runs'])}))
