@@ -8,6 +8,8 @@ def func(self):
         failure_count_before = test.data['runs'][-1]['total']['failures'] + test.data['runs'][-1]['total']['errors']
 
         r = requests.post("%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid']))
+        self.info(self.rid, r.status_code)
+        self.info(self.rid, r.text)
         result = json.loads(r.json()['returned']['content'])
         results.append(result)
         result_counters = result['message'][1]
