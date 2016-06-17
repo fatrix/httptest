@@ -127,18 +127,19 @@ def func(self):
             raise Exception("Missing data, body was: "+body )
 
         results, total_counter =  httptest.func(self, config, version, True)
+        mydatetime = datetime.now()
         runs = {
               'result': results,
               'total': total_counter,
-              'datetime': str(datetime.now())
+              'datetime': str(mydatetime)
         }
         if data.data.has_key("runs"):
             data.data['runs'].append(runs)
-            if len(data.data['runs']) > 5:
-                to_cleanup = len(data.data['runs'])-5
+            if len(data.data['runs']) > 20:
+                to_cleanup = len(data.data['runs'])-20
                 for num in range(0, to_cleanup):
                     data.data['runs'].pop(0)
         else:
             data.data['runs'] = [runs]
         self.datastore.update(data)
-        return self.responses.JSONResponse(json.dumps({"message": (results, total_counter), 'runs_count': len(data.data['runs'])}))
+        return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime)), 'runs_count': len(data.data['runs'])}))
