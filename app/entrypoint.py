@@ -7,6 +7,7 @@ def func(self):
     from datetime import datetime
 
     import httptest
+    import utils
 
     id = self.GET.get("testid", None)
 
@@ -29,23 +30,20 @@ def func(self):
             msg = ""
             if len(test_list) > 0:
                 for test in test_list:
-                    if "FRONTEND_API_URL" in self.settings:
-                        testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
-                    else:
-                        testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    testurl = utils.get_test_url(self, test.data['testid'], version, fq=True)
+                    print testurl
+                    #if "FRONTEND_API_URL" in self.settings:
+                    #    testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
+                    #else:
+                    #    testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                     msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
             else:
                 msg = "No test found"
 
-            from boto.ses import connect_to_region
+            subject = "HTTPTest - Links for %s" % email
 
-            conn = connect_to_region('us-east-1', aws_access_key_id=self.settings.AWS_KEY, aws_secret_access_key=self.settings.AWS_SECRET)
-            conn.send_email(
-                    self.settings.EMAIL_SENDER, 
-                    "HTTPTest - Links for %s" % email, 
-                    msg, 
-                    [email]
-                )
+            utils.sendmail(self, email, subject, msg)
+
             return self.responses.JSONResponse(json.dumps({"message": "sent"}))
         except Exception, e:
             self.error(self.rid, e.message)
@@ -61,11 +59,7 @@ def func(self):
         json_data.update({"runs": []})
         self.datastore.write_dict(json_data)
 
-        if "FRONTEND_API_URL" in self.settings:
-            return self.responses.RedirectResponse("%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version))
-        else:
-            return self.responses.RedirectResponse("/fastapp/httptest/static/test.html?testid=%s&version=%s" % (id, version))
-
+        return self.responses.RedirectResponse(utils.get_test_url(self, id, version))
 
     # reset
     elif self.method == "POST" and self.GET.get('action') == "reset":
@@ -142,4 +136,6 @@ def func(self):
         else:
             data.data['runs'] = [runs]
         self.datastore.update(data)
+        # send report
+        #utils.send_report(self, id, email, data.data['name'], run=mydatetime)
         return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime)), 'runs_count': len(data.data['runs'])}))

@@ -17,17 +17,24 @@
         </div>
             <!-- /.row -->
 
+        {% if not "noform" in QUERY_PARAMS %}
         {% cache 1000 httptest philipsahli adsense %}
         {% include "philipsahli:httptest:static/includes/adsense.html" %}
         {% endcache %}
+        {% endif %}
 
         <div class="row">
             <div class="col-md-8">
-                    {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} {% include "philipsahli:httptest:static/includes/form.html" with obj=obj %}
+                    {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
+                        {% if not "noform" in QUERY_PARAMS %}
+                             {% include "philipsahli:httptest:static/includes/form.html" with obj=obj %}
+                                <hr>
+                        {% endif %}
             </div>
         </div>
 
-        <hr>
+
+        {% if not "nooverview" in QUERY_PARAMS %}
 
             <!-- Call to Action Well -->
             <h2>Overview</h2>
@@ -47,7 +54,16 @@
                 </div>
             </div>
 
-            <h2>Runs</h2> {% for run in obj.data.runs reversed %}
+        {% endif %}
+
+            {% for run in obj.data.runs reversed %}
+
+            {% if "runonly" in QUERY_PARAMS and QUERY_PARAMS.runonly == run.datetime or "runonly" not in QUERY_PARAMS %}
+
+            {% if forloop.first and "runonly" not in QUERY_PARAMS %}
+            <h2>Runs</h2> 
+            {% endif %}
+           
             {% cache 500 run obj.data.testid run.datetime %}
             <div class="container well">
                 <div class="row-fluid">
@@ -81,8 +97,10 @@
                             <div class="alert alert-warning" role="alert">
                                 <h5>{{failure.message}}</h5>
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
+                                {% if not "nobuttons" in QUERY_PARAMS %}
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
+                                {% endif %}
                                 <div id="{{failure.id}}headers" class="collapse">
                                     <h4>Headers</h4>
                                     <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
@@ -97,8 +115,10 @@
                             <div class="alert alert-danger" role="alert">
                                 <h5>{{error.message}}</h5>
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
+                                {% if not "nobuttons" in QUERY_PARAMS %}
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show headers</button>
                                 <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show response text</button>
+                                {% endif %}
                                 <div id="{{error.id}}headers" class="collapse">
                                 <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
                                 <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
@@ -120,6 +140,7 @@
                     </div>
                 </div>
                 {% endcache %}
+                {% endif %}
                 {% endfor %} {% endifequal %} {% empty%}
                 <p>No runs yet</p>
                 {% endfor %}
