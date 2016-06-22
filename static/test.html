@@ -69,6 +69,15 @@
                 <div class="row-fluid">
 
                     <h3 id="{{ run.datetime}}">{{ run.datetime }}</h3>
+                    {% if "nonav" in QUERY_PARAMS %}
+                    <h4>
+                        {% if "FRONTEND_API_URL" in self.settings %}
+                               <a href="{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2">{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2</a>
+                        {% else %}
+                               <a href="{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2">{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2</a>
+                        {% endif %}
+                    </h4>
+                    {% endif %}
                     <p>
                         <span class="label label-success">success={{run.total.success}}</span>
                         <span class="label label-warning">failures={{run.total.failures}}</span>
