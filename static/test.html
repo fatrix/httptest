@@ -9,12 +9,14 @@
     <div class="container">
 
         <!-- Heading Row -->
+        {% if not "nonav" in QUERY_PARAMS %}
         <div class="row">
             <div class="col-md-12">
                 <h1 id="testid"></h1>
             </div>
         <hr>
         </div>
+        {% endif %}
             <!-- /.row -->
 
         {% if not "noform" in QUERY_PARAMS %}
@@ -71,7 +73,7 @@
                     <h3 id="{{ run.datetime}}">{{ run.datetime }}</h3>
                     {% if "nonav" in QUERY_PARAMS %}
                     <h4>
-                        {% if FRONTEND_API_URL != None %}
+                        {% if FRONTEND_API_URL %}
                                <a href="{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2">{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2</a>
                         {% else %}
                                <a href="{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2">{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2</a>
