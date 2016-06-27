@@ -1,17 +1,18 @@
-<p>The HTTPTest Tool helps to send various <strong>requests</strong> to multiple <strong>environments</strong>. For example, you want to test the following URLs:</p>
-<pre><code>GET http://test.example.com/blog HTTP/1.1                (200 expected)
-GET http://test.example.com/private HTTP/1.1             (301 expected)
+<p>The HTTPTest Tool helps execute different requests <strong>tests</strong> to multiple <strong>environments</strong>. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com.</p>
+<p>Therefore the following requests should be tested:</p>
+<pre><code>GET http://test.example.com/blog HTTP/1.1
+GET http://test.example.com/private HTTP/1.1
 
-GET https://test.example.com/private HTTP/1.1            (200 expected)
-GET https://test.example.com/blog HTTP/1.1               (301 expected)
+GET https://test.example.com/private HTTP/1.1
+GET https://test.example.com/blog HTTP/1.1
 
-GET http://example.com/blog HTTP/1.1                     (200 expected)
-GET http://example.com/private HTTP/1.1                  (301 expected)
+GET http://example.com/blog HTTP/1.1
+GET http://example.com/private HTTP/1.1
 
-GET https://example.com/private HTTP/1.1                 (200 expected)
-GET https://example.com/blog HTTP/1.1                    (301 expected)
+GET https://example.com/private HTTP/1.1
+GET https://example.com/blog HTTP/1.1
 </code></pre>
-<p>The following configuration would achieve this.</p>
+<p>The following configuration would achieve the above situation.</p>
 <pre><code>environments:
     - name:      test
       base_url:  http://test.example.com
@@ -34,6 +35,7 @@ tests:
           assert_body_contains:  "Login"
 </code></pre>
 <h2>Configuration</h2>
+<p>The configuration can be written in YAML or JSON format.</p>
 <h3>environment</h3>
 <h4>name</h4>
 <p>The environment's <code>name</code>.</p>
