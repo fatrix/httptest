@@ -1,18 +1,21 @@
-The HTTPTest Tool helps to send various **requests** to multiple **environments**. For example, you want to test the following URLs:
+The HTTPTest Tool helps execute different requests **tests** to multiple **environments**. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com.
 
-    GET http://test.example.com/blog HTTP/1.1                (200 expected)
-    GET http://test.example.com/private HTTP/1.1             (301 expected)
+Therefore the following requests should be tested:
+
+    GET http://test.example.com/blog HTTP/1.1
+    GET http://test.example.com/private HTTP/1.1
     
-    GET https://test.example.com/private HTTP/1.1            (200 expected)
-    GET https://test.example.com/blog HTTP/1.1               (301 expected)
+    GET https://test.example.com/private HTTP/1.1
+    GET https://test.example.com/blog HTTP/1.1
 
-    GET http://example.com/blog HTTP/1.1                     (200 expected)
-    GET http://example.com/private HTTP/1.1                  (301 expected)
+    GET http://example.com/blog HTTP/1.1
+    GET http://example.com/private HTTP/1.1
     
-    GET https://example.com/private HTTP/1.1                 (200 expected)
-    GET https://example.com/blog HTTP/1.1                    (301 expected)
+    GET https://example.com/private HTTP/1.1
+    GET https://example.com/blog HTTP/1.1
 
-The following configuration would achieve this.
+
+The following configuration would achieve the above situation.
 
     environments:
         - name:      test
@@ -36,6 +39,8 @@ The following configuration would achieve this.
               assert_body_contains:  "Login"
 
 ## Configuration
+
+The configuration can be written in YAML or JSON format.
 
 ### environment
 
