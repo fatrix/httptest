@@ -46,9 +46,9 @@ def func(self, data, version, response_obj=None):
                 pass
             headers = self.kwargs.get("headers", {})
             if self.data:
-                r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=3, headers=headers)
+                r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers)
             else:
-                r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=3, headers=headers)
+                r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=10, headers=headers)
 
             # save data
             self.response = r
