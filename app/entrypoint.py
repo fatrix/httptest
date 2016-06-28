@@ -22,7 +22,7 @@ def func(self):
         try:
             data = self.datastore.get("testid", id, lock=True, nowait=True)
         except Exception, e:
-            self.error(self.rid. str(e))
+            self.error(self.rid, str(e))
             raise Exception("Test already running")
         if not data:
             raise Exception("Not found")
