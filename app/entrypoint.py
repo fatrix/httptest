@@ -19,7 +19,10 @@ def func(self):
         version = DEFAULT_VERSION
 
     if id:
-        data = self.datastore.get("testid", id)
+        try:
+            data = self.datastore.get("testid", id, lock=True, nowait=True)
+        except LockException, e:
+            raise Exception("Test already running")
         if not data:
             raise Exception("Not found")
     # sendmail
@@ -31,11 +34,6 @@ def func(self):
             if len(test_list) > 0:
                 for test in test_list:
                     testurl = utils.get_test_url(self, test.data['testid'], version, fq=True)
-                    print testurl
-                    #if "FRONTEND_API_URL" in self.settings:
-                    #    testurl = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
-                    #else:
-                    #    testurl = "%s/fastapp/httptest/static/test.html?testid=%s&version=%s" % (self.settings.BASE_URL, test.data['testid'], test.data.get('version', DEFAULT_VERSION))
                     msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
             else:
                 msg = "No test found"
@@ -65,10 +63,12 @@ def func(self):
     elif self.method == "POST" and self.GET.get('action') == "reset":
         data.data['runs'] = []
         self.datastore.update(data)
+        self.datastore.session.commit()
         return self.responses.JSONResponse({'message': "reset"})
     # delete
     elif self.method == "POST" and self.GET.get('action') == "delete":
         self.datastore.delete(data)
+        self.datastore.session.commit()
         return self.responses.JSONResponse({'message': "delete"})
     # run
     elif self.method == "POST":
@@ -136,6 +136,7 @@ def func(self):
         else:
             data.data['runs'] = [runs]
         self.datastore.update(data)
+        self.datastore.session.commit()
         # send report
         #utils.send_report(self, id, email, data.data['name'], run=mydatetime)
         return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime)), 'runs_count': len(data.data['runs'])}))
