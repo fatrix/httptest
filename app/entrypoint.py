@@ -8,6 +8,7 @@ def func(self):
 
     import httptest
     import utils
+    from tumbo.core.plugins.datastore import LockException
 
     id = self.GET.get("testid", None)
 
