@@ -5,6 +5,7 @@ def func(self):
     tests = self.datastore.filter("schedule", "yes")
 
     import time
+    from core.plugins.datastore import LockException
     time.sleep(0.2)
 
     results = []

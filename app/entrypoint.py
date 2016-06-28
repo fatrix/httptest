@@ -9,6 +9,8 @@ def func(self):
     import httptest
     import utils
 
+    from core.plugins.datastore import LockException
+
     id = self.GET.get("testid", None)
 
     DEFAULT_VERSION = 2
@@ -21,7 +23,7 @@ def func(self):
     if id:
         try:
             data = self.datastore.get("testid", id, lock=True, nowait=True)
-        except Exception, e:
+        except LockException, e:
             self.error(self.rid, str(e))
             raise Exception("Test already running")
         if not data:
