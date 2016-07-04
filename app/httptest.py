@@ -237,8 +237,11 @@ def func(self, data, version, response_obj=None):
     class MyTextTestResult(unittest.TextTestResult):
         def addSkip(self, test, reason):
             super(MyTextTestResult, self).addSkip(test, reason)
-            self.ssl_info["None"] = None
-
+            if hasattr(self, "ssl_info"):
+                self.ssl_info['None'] = None
+            else:
+                self.ssl_info = {}
+                self.ssl_info["None"] = None
         def addSuccess(self, test):
             #from remote_pdb import RemotePdb
             #RemotePdb('127.0.0.1', 4444).set_trace()
