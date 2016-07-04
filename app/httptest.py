@@ -6,6 +6,7 @@ def func(self, data, version, response_obj=None):
     import string
     import random
     from multiprocessing.pool import ThreadPool
+    import utils
 
     info = self.info
     error = self.error
@@ -46,9 +47,9 @@ def func(self, data, version, response_obj=None):
                 pass
             headers = self.kwargs.get("headers", {})
             if self.data:
-                r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers)
+                r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers, allow_redirects=False)
             else:
-                r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=10, headers=headers)
+                r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=10, headers=headers, allow_redirects=False)
 
             # save data
             self.response = r
@@ -95,9 +96,9 @@ def func(self, data, version, response_obj=None):
             #info(rid, "OK "+self.url)
 
     class HTTPTestV2(HTTPTest):
-        def __init__(self, id, test_assert, **kwargs):
+        def __init__(self, outer_self, id, test_assert, **kwargs):
             super(HTTPTest, self).__init__()
-            print "ASSERT: "+str(test_assert)
+            self.outer_self = outer_self
             self.assert_key, self.assert_value = test_assert
             self.response = None
             self.kwargs = kwargs
@@ -109,6 +110,8 @@ def func(self, data, version, response_obj=None):
             self.id = id
             if kwargs.get('username', None):
                     self.auth = (kwargs['username'], kwargs['password'])
+
+            self.ssl_info = None
 
         def runTest(self):
             """ 
@@ -129,6 +132,25 @@ def func(self, data, version, response_obj=None):
             if self.kwargs.get('skip', None):
                 raise unittest.SkipTest("test marked as skip (%s)" % self.url)
             self.verify = self.kwargs.get('ssl_verify', True)
+            try:
+                from urlparse import urlparse
+                url_parsed = urlparse(self.url)
+                if url_parsed.scheme == "https":
+                    host_port = url_parsed.netloc.split(":")
+                    host = host_port[0]
+                    if url_parsed.port:
+                        port = url_parsed.port
+                    else:
+                        port = 443
+                    self.ssl_info = utils.get_ssl_info(self.outer_self, host, port)
+                else:
+                    self.ssl_info = None
+            except Exception, e:
+                self.outer_self.error(self.outer_self.rid, str(e))
+                if "handshake failure" in str(e):
+                    self.ssl_info = str(e)
+                else:
+                    self.ssl_info = "Unexpected SSL Error (%s)" % str(e)
             try:
                 self._send_request()
                 self.response_text = self.response.text
@@ -160,7 +182,6 @@ def func(self, data, version, response_obj=None):
                     header = self.assert_value
                     assert header not in self.response.headers.keys(), "assert_header_is_not_set failed, header '%s' is set" % header
 
-
                 if self.assert_key == "assert_header_value_contains":
                     headers = self.assert_value
                     for k, v in headers.iteritems():
@@ -178,6 +199,11 @@ def func(self, data, version, response_obj=None):
                 raise requests.ConnectionError("%s: %s" % (self.url, str(e.message)))
             except Exception, e:
                 self.error = repr(e)
+                import time
+                import traceback
+                traceback.print_exc()
+
+                time.sleep(5)
                 raise Exception("%s: %s" % (self.url, repr(e)))
 
 
@@ -190,9 +216,6 @@ def func(self, data, version, response_obj=None):
             variables = env.get('variables', {})
             for var_k, var_v in variables.iteritems():
                 request['url'] = request['url'].replace("{{%s}}" % var_k, var_v)
-                print "*******"
-                print request['url']
-                print "*******"
             request['env_name'] = env['name']
             if version == 1:
                 tests.append(HTTPTest(**request))
@@ -200,7 +223,7 @@ def func(self, data, version, response_obj=None):
                 for test_assert in request['asserts'].iteritems():
                     N = 5
                     id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-                    tests.append(HTTPTestV2(id, test_assert, **request))
+                    tests.append(HTTPTestV2(self, id, test_assert, **request))
             else:
                 raise Exception("Unknown version %s" % version)
         suite.addTests(tests)
@@ -208,10 +231,43 @@ def func(self, data, version, response_obj=None):
 
     result_list = {}
     env_pool = ThreadPool(processes=10)
+    class MyTestRunner(unittest.TextTestRunner):
+        def _makeResult(self):
+            return MyTextTestResult(self.stream, self.descriptions, self.verbosity)
+    class MyTextTestResult(unittest.TextTestResult):
+        def addSuccess(self, test):
+            #from remote_pdb import RemotePdb
+            #RemotePdb('127.0.0.1', 4444).set_trace()
+            if hasattr(self, "ssl_info"):
+                self.ssl_info[test.env_name] = test.ssl_info
+            else:
+                self.ssl_info = {}
+                self.ssl_info[test.env_name] = test.ssl_info
+        def addFailure(self, test, err):
+            super(MyTextTestResult, self).addFailure(test, err)
+            #from remote_pdb import RemotePdb
+            #RemotePdb('127.0.0.1', 4444).set_trace()
+            if hasattr(self, "ssl_info"):
+                self.ssl_info[test.env_name] = test.ssl_info
+            else:
+                self.ssl_info = {}
+                self.ssl_info[test.env_name] = test.ssl_info
+        def addError(self, test, err):
+            super(MyTextTestResult, self).addError(test, err)
+            #from remote_pdb import RemotePdb
+            #RemotePdb('127.0.0.1', 4444).set_trace()
+            if hasattr(self, "ssl_info"):
+                self.ssl_info[test.env_name] = test.ssl_info
+            else:
+                self.ssl_info = {}
+                self.ssl_info[test.env_name] = test.ssl_info
+
+
     def run_test(*args):
         request = args[0]
         environments= args[1]
-        return unittest.TextTestRunner().run(suite(request, environments, int(version)))
+        #return unittest.TextTestRunner().run(suite(request, environments, int(version)))
+        return MyTestRunner().run(suite(request, environments, int(version)))
 
     # main
     result_pool = {}
@@ -228,7 +284,11 @@ def func(self, data, version, response_obj=None):
             "success": 0,
             "skipped": 0 
         }
+    ssl_info = {}
     for func, async_result in result_pool.items():
+
+        #from remote_pdb import RemotePdb
+        #RemotePdb('127.0.0.1', 4444).set_trace()
         result = async_result.get()
         success = result.wasSuccessful()
         #self.info(self.rid, str(result.__dict__))
@@ -276,6 +336,8 @@ def func(self, data, version, response_obj=None):
                 'headers': a[0].__dict__.get("headers", {})
             })
 
+        for env, info in result.ssl_info.items():
+            ssl_info[env] = info
 
         result_list[func] = {
                 "success": success, 
@@ -289,5 +351,6 @@ def func(self, data, version, response_obj=None):
     if not response_obj:
         return self.responses.JSONResponse((len(result_pool), result_list))
     else:
-        return result_list, total_counters
+        #return result_list, total_counters, result.ssl_info
+        return result_list, ssl_info, total_counters
 

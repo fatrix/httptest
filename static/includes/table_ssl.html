@@ -1,0 +1,36 @@
+							<table id="table" class="table table-condensed">
+								<!--<thead>
+									<tr>
+										<th data-field="key" class="col-md-3">Name</th>
+										<th data-field="value">Value</th>
+									</tr>
+								</thead> -->
+								<tbody>
+									<tr>
+										<td class="name">Common Name</td>
+										<td class="value" >{{info.commonName}}</td>
+									</tr>
+									<tr>
+										<td class="name">Issued by CA</td>
+										<td class="value" >{{info.issuer}}</a></td>
+									</tr>
+									<tr>
+										<td class="name">Valid from</td>
+										<td class="value" >{{info.notBefore}}</code></td>
+									</tr>
+									<tr>
+										<td class="name">Valid until</td>
+										<td class="value" >{{info.notAfter}}</code></td>
+									</tr>
+									<tr>
+										<td class="name">Days left</td>
+										<td class="value" >{% if info.daysLeft < 10 %}<span class="warning glyphicon glyphicon-warning-sign" aria-hidden="true"></span> {% endif %}{{info.daysLeft}}</code></td>
+									</tr>
+									<tr>
+										<td class="name">Serial Number</td>
+										<td class="value" >{{info.serialNumber}}</code></td>
+									</tr>
+								</tbody>
+								</tbody>
+							</table>
+

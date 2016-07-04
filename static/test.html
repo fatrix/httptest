@@ -43,13 +43,13 @@
             <div class="well">
                 <div class="row-fluid">
                     {% for run in obj.data.runs reversed %}
-                    <h4>{{ run.datetime }} <small><a href="#{{run.datetime}}">details</a></small></h4>
-                    <p>
-                        <span class="label label-success">success={{run.total.success}}</span>
-                        <span class="label label-warning">failures={{run.total.failures}}</span>
-                        <span class="label label-danger">errors={{run.total.errors}}</span>
-                        <span class="label label-default">skipped={{run.total.skipped}}</span>
-                    </p>
+                    <h4>{{ run.datetime }} <small><a href="#{{run.datetime}}">Details</a></small>
+                        <!--<span class="glyphicon glyphicon-heart"></span>-->
+                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success label-">success={{run.total.success}}</span>
+                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
+                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
+                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
+                    </h4>
                     {% empty %}
                     <p>No runs yet</p>
                     {% endfor %}
@@ -80,29 +80,39 @@
                         {% endif %}
                     </h4>
                     {% endif %}
-                    <p>
-                        <span class="label label-success">success={{run.total.success}}</span>
-                        <span class="label label-warning">failures={{run.total.failures}}</span>
-                        <span class="label label-danger">errors={{run.total.errors}}</span>
-                        <span class="label label-default">skipped={{run.total.skipped}}</span>
-                    </p>
+                    <h4>
+                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{run.total.success}}</span>
+                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
+                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
+                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
+                    </h4>
 
 
-                    <div class="col-md-4 smaller-text">
+                    <div class="col-md-6 smaller-text">
                         <h3>Overview</h3>
                             {% for url, l in run.result.items %} {% if l.success %}
                             <div class="alert alert-success" role="alert">{{ url }} {% else %}
                                 <div class="alert alert-warning" role="alert">{{ url }} {% endif %}
                                     <p>
-                                        <span class="label label-success">success={{l.result_counters.success}}</span>
-                                        <span class="label label-warning">failures={{l.result_counters.failures}}</span>
-                                        <span class="label label-danger">errors={{l.result_counters.errors}}</span>
-                                        <span class="label label-default">skipped={{l.result_counters.skipped}}</span>
+                                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{l.result_counters.success}}</span>
+                                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{l.result_counters.failures}}</span>
+                                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{l.result_counters.errors}}</span>
+                                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{l.result_counters.skipped}}</span>
                                     </p>
                                 </div>
                                 {% endfor %}
+                        <h3>SSL Info</h3>
+                            {% for url, info in run.ssl_info.items %}
+                                <h4>Environment <strong>{{url}}</strong></h4>
+                                {% if not info.items %}
+                                <p><small><code>{{ info }}</code></small></p>
+                                {% else %}
+                                {% include "philipsahli:httptest:static/includes/table_ssl.html" with info=info %}
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        <div class="col-md-8 smaller-text">
+
+                        <div class="col-md-6 smaller-text">
                             <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
                             <h4>{{ url }}</h4> {% for failure in l.failures %}
                             <div class="alert alert-warning" role="alert">
@@ -127,12 +137,12 @@
                                 <h5>{{error.message}}</h5>
                                 {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
                                 {% if not "nobuttons" in QUERY_PARAMS %}
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show headers</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show response text</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show Headers</button>
+                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show Response Body</button>
                                 {% endif %}
                                 <div id="{{error.id}}headers" class="collapse">
-                                <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
-                                <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
+                                <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
+                                <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
                                 </div>
 
                                 <div id="{{error.id}}body" class="collapse">

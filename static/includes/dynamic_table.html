@@ -1,3 +1,6 @@
+{% ifequal items|length 0 %} 
+    <p>None</p>
+{% else %}
 							<table id="table" class="table table-condensed">
 								<thead>
 									<tr>
@@ -14,4 +17,4 @@
 									{% endfor %}
 								</tbody>
 							</table>
-
+{% endifequal %}

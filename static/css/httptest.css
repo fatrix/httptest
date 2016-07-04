@@ -79,3 +79,9 @@ textarea {
 #buttons > div {
     margin-top: 10px;
 }
+.opac {
+opacity: 0.4;
+}
+.warning {
+color: orange;
+}

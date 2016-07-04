@@ -123,10 +123,11 @@ def func(self):
         else:
             raise Exception("Missing data, body was: "+body )
 
-        results, total_counter =  httptest.func(self, config, version, True)
+        results, ssl_info, total_counter =  httptest.func(self, config, version, True)
         mydatetime = datetime.now()
         runs = {
               'result': results,
+              'ssl_info': ssl_info,
               'total': total_counter,
               'datetime': str(mydatetime)
         }
@@ -142,4 +143,4 @@ def func(self):
         self.datastore.session.commit()
         # send report
         #utils.send_report(self, id, email, data.data['name'], run=mydatetime)
-        return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime)), 'runs_count': len(data.data['runs'])}))
+        return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime), ssl_info), 'runs_count': len(data.data['runs'])}))

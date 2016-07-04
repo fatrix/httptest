@@ -41,3 +41,58 @@ def send_report(self, id, email, name, run=None, subject=None):
         subject = "HTTPTest - Report %s" % name
     result = sendmail(self, email, subject, r.text)
     return result
+
+def get_ssl_info(self, host, port):
+        """
+        http://unix.stackexchange.com/questions/104623/how-to-get-servers-ssl-certificate-in-a-human-readable-form
+        HOST, PORT
+        """
+        import socket
+        import ssl
+
+        self.info(self.rid, "IN IT")
+
+        CA_CERTS = "/etc/pki/tls/certs/ca-bundle.trust.crt"
+
+        def getcert(addr, timeout=None):
+                """Retrieve server's certificate at the specified address (host, port)."""
+                # it is similar to ssl.get_server_certificate() but it returns a dict
+                # and it verifies ssl unconditionally, assuming create_default_context does
+                sock = socket.create_connection(addr, timeout=timeout)
+                sslsock = ssl.wrap_socket(sock, cert_reqs=ssl.CERT_REQUIRED,
+                                                                           ca_certs=CA_CERTS,
+                                                                           ciphers=("HIGH:-aNULL:-eNULL:"
+                                                                                                "-PSK:RC4-SHA:RC4-MD5"))
+                cert = sslsock.getpeercert()
+                sock.close()
+                return cert
+
+
+        self.info(self.rid, str(self.GET))
+
+        self.info(self.rid, host)
+        self.info(self.rid, port)
+
+        cert = getcert((host, int(port)))
+        from datetime import datetime
+        expire_date = datetime.strptime(cert['notAfter'],
+                                            "%b %d %H:%M:%S %Y %Z")
+        daysLeft = expire_date - datetime.now()
+
+        for subject_item in cert['subject']:
+#            print subject_item[0]
+            if subject_item[0][0] == "commonName":
+                commonName = subject_item[0][1]
+
+        cert_dict = {}
+        cert_dict['notBefore'] = cert['notBefore']
+        cert_dict['notAfter'] = cert['notAfter']
+        cert_dict['serialNumber'] = cert['serialNumber']
+        cert_dict['issuer'] = cert['issuer'][2][0][1]
+        #cert_dict['subject'] = cert['subject'][0][0][1]
+        #cert_dict['fullSubject'] = cert['subject']
+        cert_dict['daysLeft'] = daysLeft.days
+        #cert_dict['fullCert'] = cert
+        cert_dict['commonName'] = commonName
+        return cert_dict
+

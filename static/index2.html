@@ -1,0 +1,108 @@
+{% extends "philipsahli:httptest:static/base.html" %}
+
+{% load humanize %}
+
+
+    {% block body %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>HTTPTest</h1>
+            <h2>Testing Tool for HTTP</h1>
+            <p>Declarative HTTP Endpoint testing with assert functions</p>
+<ul>
+  <li>HTTP Service Testing</li>
+  <li>Alerting</li>
+  <li>SSL Certificate Monitoring (Coming soon)</li>
+</ul>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Heading Row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h1 id="testid"></h1>
+                <!-- <h1 id="version"></h1> -->
+                <!--<a href="/fastapp/api/base/httptest/apy/entrypoint/execute/">Create new test</a>-->
+                {% if FRONTEND_API_URL %}
+                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Create new test &raquo;</a>
+                <div></div>
+                <div class="input-group col-md-4" style="padding-top: 10px;">
+                  <input id="email" type="text" class="form-control">
+                  <span class="input-group-btn">
+                    <button id="sendmail" class="btn btn-primary" type="button">Mail my links &raquo;</button>
+                  </span>
+                </div><!-- /input-group -->
+
+
+                {% else %}
+                <a target="_blank" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Create new test &raquo;</a>
+                <!--<a target="_blank" id="sendmail" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Mail my links &raquo;</a>-->
+                <div></div>
+                <div class="input-group col-md-4" style="padding-top: 10px;">
+                  <input id="email" type="text" class="form-control">
+                  <span class="input-group-btn">
+                    <button id="sendmail" class="btn btn-primary" type="button">Mail my links &raquo;</button>
+                  </span>
+                </div><!-- /input-group -->
+
+                {% endif %}
+
+
+
+                <div>
+                    <h3>Example <small>Start with this simple configuration</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>YAML Data <small>If you prefer JSON format translate it on <a href="http://yamltojson.com/">yamltojson.com</a></small></h4>
+                            <code>environments:
+    - name: "sahli"
+      base_url: "https://sahli.net"
+    - name: "tumbo.io"
+      base_url: "https://tumbo.io"
+tests:
+    - name: "test_home"
+      uri: "/"
+      asserts:
+         assert_status_code_is: 200</code>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-md-4 -->
+
+                <div>
+                    <h3>Support<small> For maintaining the project and pursuing development</small></h3>
+                    <p>Donaters can create up to 5 Tests!</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="X2SM7WJX3DS3J">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form> -->
+
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="https://www.sandbox.paypal.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal.">
+<img alt="" border="0" src="https://www.sandbox.paypal.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <hr>
+        </div>
+            <!-- /.row -->
+
+        {% include "philipsahli:httptest:static/includes/adsense.html" %}
+
+
+{% endblock %}

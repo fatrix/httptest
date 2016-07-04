@@ -86,7 +86,7 @@ The path to send the request to.
 
 Default: `GET`
 
-If POST, you can define the data (JSON format) in the key `data`. If the data is recognized as URL (starting with `http`), the data is loaded from this URL.
+If `POST`, you can define the data (JSON format) in the key `data`. If the data is recognized as URL (starting with `http`), the data is loaded from this URL.
 
 ### skip
 
