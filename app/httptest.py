@@ -237,7 +237,7 @@ def func(self, data, version, response_obj=None):
     class MyTextTestResult(unittest.TextTestResult):
         def addSkip(self, test):
             super(MyTextTestResult, self).addSkip(test, reason)
-            self.ssl_info["None"] None
+            self.ssl_info["None"] = None
 
         def addSuccess(self, test):
             #from remote_pdb import RemotePdb
