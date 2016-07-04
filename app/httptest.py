@@ -235,7 +235,7 @@ def func(self, data, version, response_obj=None):
         def _makeResult(self):
             return MyTextTestResult(self.stream, self.descriptions, self.verbosity)
     class MyTextTestResult(unittest.TextTestResult):
-        def addSkip(self, test):
+        def addSkip(self, test, reason):
             super(MyTextTestResult, self).addSkip(test, reason)
             self.ssl_info["None"] = None
 
