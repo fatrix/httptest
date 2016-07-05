@@ -51,7 +51,7 @@
                         <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
                     </h4>
                     {% empty %}
-                    <p>No runs yet</p>
+                    <p>No Runs yet</p>
                     {% endfor %}
                 </div>
             </div>
@@ -124,8 +124,8 @@
                                 {% endif %}
                                 <div id="{{failure.id}}headers" class="collapse">
                                     <h4>Headers</h4>
-                                    <h5>Request</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
-                                    <h5>Response</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                                    <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
+                                    <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
                                 </div>
                                 <div id="{{failure.id}}body" class="collapse">
                                     <h4>Response Body</h4>
@@ -163,7 +163,7 @@
                 {% endcache %}
                 {% endif %}
                 {% endfor %} {% endifequal %} {% empty%}
-                <p>No runs yet</p>
+                <p>No Runs yet</p>
                 {% endfor %}
 
 
