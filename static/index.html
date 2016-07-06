@@ -23,11 +23,8 @@
         <!-- Heading Row -->
         <div class="row">
             <div class="col-md-12">
-                <h1 id="testid"></h1>
-                <!-- <h1 id="version"></h1> -->
-                <!--<a href="/fastapp/api/base/httptest/apy/entrypoint/execute/">Create new test</a>-->
                 {% if FRONTEND_API_URL %}
-                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Create new test &raquo;</a>
+                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Create new test &raquo;</a>
                 <div></div>
                 <div class="input-group col-md-4" style="padding-top: 10px;">
                   <input id="email" type="text" class="form-control">
@@ -53,7 +50,7 @@
 
 
                 <div>
-                    <h3>Example <small>Start with this simple configuration</h3>
+                    <h3>Example <small>Start with this simple configuration</small></h3>
                     <div class="row">
                         <div class="col-md-6">
                             <h4>YAML Data <small>If you prefer JSON format translate it on <a href="http://yamltojson.com/">yamltojson.com</a></small></h4>
@@ -77,6 +74,7 @@ tests:
             <!-- /.row -->
 
         {% include "philipsahli:httptest:static/includes/adsense.html" %}
+        {% include "philipsahli:httptest:static/includes/twitter.html" %}
 
 
 {% endblock %}

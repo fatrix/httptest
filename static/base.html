@@ -1,9 +1,9 @@
 {% load humanize %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang="en">
 
 <head>
-    <title>HTTPTest Tool</title>
+    <title>HTTPTest Tool :: Testing Tool for HTTP-Based Services</title>
     <meta http-equiv="Cache-control" content="no-cache">
     <meta name="charset" content="ISO-8859-1" />
     <meta name="description" content="Testing Tool for HTTP-Based Services - Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring"/>
@@ -80,10 +80,10 @@
                 <ul class="nav navbar-nav">
                     {% if FRONTEND_STATIC_URL %}
                     <li>
-                        <a href="/usage.html">Usage</a>
+                        <a href="/usage.html" title="How to use HTTPTest Tool">Usage</a>
                     </li>
                     <li>
-                        <a href="/about.html">About</a>
+                        <a href="/about.html" title="About the Tool, Disclaimer">About</a>
                     </li>
                     {% else %}
                     <li>
@@ -107,7 +107,7 @@
                 <footer>
                     <div class="row">
                         <div class="col-lg-12">
-                            <p>Copyright &copy; sahli.net 2016</p>
+                            <p>Copyright &copy; <a target="_blank" href="https://sahli.net">sahli.net</a> 2016 :: Running on <a href="https://tumbo.io">Tumbo</a></p>
                         </div>
                     </div>
                 </footer>
