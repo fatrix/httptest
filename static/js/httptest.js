@@ -76,7 +76,7 @@ $(document).ready(function() {
 
     });
 
-    csrftoken = $("input[name*='csrfmiddlewaretoken'").attr("value");
+    csrftoken = $("input[name*='csrfmiddlewaretoken']").attr("value");
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
