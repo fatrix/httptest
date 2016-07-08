@@ -115,12 +115,12 @@ $(document).ready(function() {
                 try {
                     $(that).prop('disabled', false);
                     $(that).text(orig_text);
-                    var txt = `<div class="alert alert-danger"> <strong>Error! </strong>` + JSON.parse(xhr.responseText).exception_message + `</div>`;
+                    var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + JSON.parse(xhr.responseText).exception_message + '</div>';
                     $("div#buttons").append(txt);
                 } catch(err) {
                     $(that).prop('disabled', false);
                     $(that).text(orig_text);
-                    var txt = `<div class="alert alert-danger"> <strong>Error! </strong>` + "Unknown Error" + `</div>`;
+                    var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + "Unknown Error" + '</div>';
                     $("div#buttons").append(txt);
                 }
             },
