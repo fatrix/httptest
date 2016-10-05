@@ -1,6 +1,6 @@
-The HTTPTest Tool helps execute different requests **tests** to multiple **environments**. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com.
+The HTTPTest Tool sends different **tests** requests to multiple **environments**. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com. You need to test the correct behaviour of the different instances and their configuration.
 
-Therefore the following requests should be tested:
+The following URLs needs to be tested:
 
     GET http://test.example.com/blog HTTP/1.1
     GET http://test.example.com/private HTTP/1.1
@@ -15,7 +15,7 @@ Therefore the following requests should be tested:
     GET https://example.com/blog HTTP/1.1
 
 
-The following configuration would achieve the above situation.
+The following configuration would describe the test run.
 
     environments:
         - name:      test
@@ -86,7 +86,7 @@ The path to send the request to.
 
 Default: `GET`
 
-If `POST`, you can define the data (JSON format) in the key `data`. If the data is recognized as URL (starting with `http`), the data is loaded from this URL.
+If `POST`, you can define the data (JSON format) in the key `data`. If the data is recognized as URL (starting with `http`), the data is loaded from this URL. The data is sent with Content-Type `application/xml` if the string starts with `<`.
 
 ### skip
 

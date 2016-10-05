@@ -19,7 +19,7 @@ def get_test_url(self, id, version=None, fq=False):
     if "FRONTEND_API_URL" in self.settings:
         url = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version)
     else:
-        url = "/fastapp/httptest/static/test.html?testid=%s&version=%s" % (id, version)
+        url = "/userland/%s/httptest/static/test.html?testid=%s&version=%s" % (self.settings.RUNTIME_USER, id, version)
 
     if fq and not url.startswith("http"):
         url=self.settings.BASE_URL+url

@@ -3,117 +3,132 @@
 <html lang="en">
 
 <head>
-    <title>HTTPTest Tool :: Testing Tool for HTTP-Based Services</title>
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta name="charset" content="ISO-8859-1" />
-    <meta name="description" content="Testing Tool for HTTP-Based Services - Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring"/>
-    <meta name="keywords" content="Application Testing, HTTP-Based, HTTP, Service Testing, Unittest, Python, Unittesting, Web, testing, HTTP, assert" />
-    <meta name="copyright" content="Copyright &copy; 2016 sahli.net" />
-    <meta name="author" content="Philip Sahli" />
-    <meta name="designer" content="Philip Sahli" />
-    <meta name="robots" content="index, nofollow" />
-    <meta name="googlebot" content="index, nofollow, noarchive" />
-    {% if FRONTEND_STATIC_URL %}
-    <link rel="icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" /> 
-    {% else %}
-    <link rel="icon" type="image/x-icon" href="{{FASTAPP_STATIC_URL}}favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="{{FASTAPP_STATIC_URL}}favicon.ico" /> 
-    {% endif %}
+<title>HTTPTest Tool :: Testing Tool for HTTP-Based Services</title>
+<meta http-equiv="Cache-control" content="no-cache">
+<meta name="charset" content="ISO-8859-1" />
+<meta name="description" content="Testing Tool for HTTP-Based Services - Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring"/>
+<meta name="keywords" content="Application Testing, HTTP-Based, HTTP, Service Testing, Unittest, Python, Unittesting, Web, testing, HTTP, assert" />
+<meta name="copyright" content="Copyright &copy; 2016 sahli.net" />
+<meta name="author" content="Philip Sahli" />
+<meta name="designer" content="Philip Sahli" />
+<meta name="robots" content="index, nofollow" />
+<meta name="googlebot" content="index, nofollow, noarchive" />
+{% if FRONTEND_STATIC_URL %}
+<link rel="icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" /> 
+{% else %}
+<link rel="icon" type="image/x-icon" href="{{FASTAPP_STATIC_URL}}favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="{{FASTAPP_STATIC_URL}}favicon.ico" /> 
+{% endif %}
 
-    <!-- jquery -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+<!-- jquery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 
-    {% if FRONTEND_STATIC_URL %}
-    <script type="text/javascript" src="{{ FRONTEND_STATIC_URL }}js/httptest.js"></script>
-    {% else %}
-    <script type="text/javascript" src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
-    {% endif %}
+{% if FRONTEND_STATIC_URL %}
+<script type="text/javascript" src="{{ FRONTEND_STATIC_URL }}js/httptest.js"></script>
+{% else %}
+<script type="text/javascript" src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
+{% endif %}
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<!-- Optional theme -->
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">-->
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-    {% if FRONTEND_STATIC_URL %}
-    <link rel="stylesheet" href="{{ FRONTEND_STATIC_URL }}css/httptest.css">
-    {% else %}
-    <link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
-    {% endif %}
+{% if FRONTEND_STATIC_URL %}
+<link rel="stylesheet" href="{{ FRONTEND_STATIC_URL }}css/httptest.css">
+{% else %}
+<link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
+{% endif %}
 
-    {% block header %}
-    {% endblock %}
+{% block header %}
+{% endblock %}
 
-    <script type="text/javascript">
-        window.user = "{{RUNTIME_USER}}";
-        {% if FRONTEND_API_URL %}
-        window.api_url = "{{FRONTEND_API_URL}}";
-        {% endif %}
-    </script>
+<script type="text/javascript">
+window.user = "{{RUNTIME_USER}}";
+{% if FRONTEND_API_URL %}
+window.api_url = "{{FRONTEND_API_URL}}";
+{% endif %}
+</script>
 
 </head>
 
 <body>
 
-    <!-- Navigation -->
-    {% if not "nonav" in QUERY_PARAMS %}
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% if FRONTEND_STATIC_URL %}/{% else %}{{FASTAPP_STATIC_URL}}index.html{% endif %}">
-                    <img src="//placehold.it/150x50&text=HTTPTest" alt="">
-                </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    {% if FRONTEND_STATIC_URL %}
-                    <li>
-                        <a href="/usage.html" title="How to use HTTPTest Tool">Usage</a>
-                    </li>
-                    <li>
-                        <a href="/about.html" title="About the Tool, Disclaimer">About</a>
-                    </li>
-                    {% else %}
-                    <li>
-                        <a href="{{ FASTAPP_STATIC_URL}}usage.html">Usage</a>
-                    </li>
-                    <li>
-                        <a href="{{ FASTAPP_STATIC_URL}}about.html">About</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+<!-- Navigation -->
+{% if not "nonav" in QUERY_PARAMS %}
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% if FRONTEND_STATIC_URL %}/{% else %}{{FASTAPP_STATIC_URL}}index.html{% endif %}">
+                <img src="//placehold.it/150x50&text=HTTPTest" alt="">
+            </a>
         </div>
-        <!-- /.container -->
-    </nav>
-    {% endif %}
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                {% if FRONTEND_STATIC_URL %}
+                <li>
+                <a href="/usage.html" title="How to use HTTPTest Tool">Usage</a>
+                </li>
+                <li>
+                <a href="/about.html" title="About the Tool, Disclaimer">About</a>
+                </li>
+                {% else %}
+                <li>
+                <a href="{{ FASTAPP_STATIC_URL}}usage.html">Usage</a>
+                </li>
+                <li>
+                <a href="{{ FASTAPP_STATIC_URL}}about.html">About</a>
+                </li>
+                {% endif %}
+                <li>
+                {% if is_authenticated %}
+                    {% if LOGOUT_URL != None %}
+                    <a href="{{ LOGOUT_URL }}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/admin/httptest/static/index.html">Logout</a>
+                    {% endif %}
+                {% else %}
+                    {% if LOGIN_URL != None %}
+                    <a href="{{ LOGIN_URL }}">Login</a>
+                    {% else %}
+                    <a href="{% url 'cas-login' %}?service=/userland/admin/httptest/static/index.html">Login</a>
+                    {% endif %}
+                {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+{% endif %}
 
-    {% block body %}
-    {% endblock %}
+{% block body %}
+{% endblock %}
 
-                <footer>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>Copyright &copy; <a target="_blank" href="https://sahli.net">sahli.net</a> 2016 :: Running on <a href="https://tumbo.io">Tumbo</a></p>
-                        </div>
-                    </div>
-                </footer>
+<footer>
+    <div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <p>Copyright &copy; <a target="_blank" href="https://sahli.net">sahli.net</a> 2016 :: Running on <a href="https://tumbo.io">Tumbo</a></p>
+        </div>
+    </div>
+    </div>
+</footer>
 
-            </div>
-            <!-- /.container -->
+</div>
         {{ GOOGLE_ANALYTICS|safe }}
 </body>
 

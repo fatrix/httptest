@@ -36,17 +36,15 @@ def func(self, data, version, response_obj=None):
 
             self.type = kwargs.get('type', None)
 
-
         def _send_request(self):
-            if self.data and self.data.startswith("http"):
-                data = requests.get(self.data).text
-                self.data = json.loads(data)
-            try:
-                self.data = json.loads(self.data)
-            except:
-                pass
             headers = self.kwargs.get("headers", {})
-            if self.data:
+            if self.data and self.data.startswith("http"):
+                self.data = requests.get(self.data).text
+            if self.data and self.data.startswith("<"):
+                headers['Content-Type'] = 'application/xml'
+                r = requests.request(self.method, self.url, data=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers, allow_redirects=False)
+            elif self.data:
+                self.data = json.loads(self.data)
                 r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers, allow_redirects=False)
             else:
                 r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=10, headers=headers, allow_redirects=False)
@@ -210,20 +208,23 @@ def func(self, data, version, response_obj=None):
     def suite(request, environments, version=1):
         suite = unittest.TestSuite()
         tests = []
+        import copy
         for env in environments:
-            request.update(env)
-            request['url'] = env['base_url']+request['uri']
+            # needs to deepcopy the arg because we enrich the dict with stuff from environment
+            request_orig = copy.deepcopy(request)
+            request_orig.update(env)
+            request_orig['url'] = env['base_url']+request_orig['uri']
             variables = env.get('variables', {})
             for var_k, var_v in variables.iteritems():
-                request['url'] = request['url'].replace("{{%s}}" % var_k, var_v)
-            request['env_name'] = env['name']
+                request_orig['url'] = request_orig['url'].replace("{{%s}}" % var_k, var_v)
+            request_orig['env_name'] = env['name']
             if version == 1:
-                tests.append(HTTPTest(**request))
+                tests.append(HTTPTest(**request_orig))
             elif version == 2:
-                for test_assert in request['asserts'].iteritems():
+                for test_assert in request_orig['asserts'].iteritems():
                     N = 5
                     id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-                    tests.append(HTTPTestV2(self, id, test_assert, **request))
+                    tests.append(HTTPTestV2(self, id, test_assert, **request_orig))
             else:
                 raise Exception("Unknown version %s" % version)
         suite.addTests(tests)
@@ -231,9 +232,11 @@ def func(self, data, version, response_obj=None):
 
     result_list = {}
     env_pool = ThreadPool(processes=10)
+
     class MyTestRunner(unittest.TextTestRunner):
         def _makeResult(self):
             return MyTextTestResult(self.stream, self.descriptions, self.verbosity)
+
     class MyTextTestResult(unittest.TextTestResult):
         def addSkip(self, test, reason):
             super(MyTextTestResult, self).addSkip(test, reason)

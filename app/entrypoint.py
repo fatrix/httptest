@@ -49,7 +49,7 @@ def func(self):
         except Exception, e:
             self.error(self.rid, e.message)
             return self.responses.JSONResponse(json.dumps({"message": "error", "details": e.message}))
-    
+
     # redirect to static url
     elif self.method == "GET":
         # create new test
@@ -58,6 +58,7 @@ def func(self):
         json_data.update({"testid": id})
         json_data.update({"version": version})
         json_data.update({"runs": []})
+        json_data.update({"user_id": self.identity['internalid']})
         self.datastore.write_dict(json_data)
 
         return self.responses.RedirectResponse(utils.get_test_url(self, id, version))
@@ -75,6 +76,7 @@ def func(self):
         return self.responses.JSONResponse({'message': "delete"})
     # run
     elif self.method == "POST":
+        user_id = self.identity['internalid']
         if not self.GET.has_key("from_store"):
             name = self.POST.get("name", None)
             config_data = self.POST.get("config_data", None)
@@ -99,6 +101,7 @@ def func(self):
         data.data['config_url'] = config_url
         data.data['name'] = name
         data.data['email'] = email
+        data.data['user_id'] = user_id
         if "yes" in save_data:
             data.data['config_data'] = config_data
             data.data['save_data'] = save_data
@@ -122,6 +125,10 @@ def func(self):
             config = yaml.load(body)
         else:
             raise Exception("Missing data, body was: "+body )
+
+        # save config_data as dict
+        if "yes" in save_data:
+            data.data['config_data_dict'] = config
 
         results, ssl_info, total_counter =  httptest.func(self, config, version, True)
         mydatetime = datetime.now()

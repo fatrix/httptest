@@ -84,7 +84,7 @@ $(document).ready(function() {
     });
 
     if (window.api_url == null){
-        base_url = '/fastapp/api/username/'+window.user+'/base/httptest/apy/entrypoint/execute/';
+        base_url = '/userland/'+window.user+'/httptest/api/apy/entrypoint/execute/';
     } else {
         base_url = window.api_url;
     }

@@ -5,166 +5,165 @@
 
 
 {% block body %}
-    <!-- Page Content -->
-    <div class="container">
+{% if is_authenticated %}
+<!-- Page Content -->
+<div class="container">
 
-        <!-- Heading Row -->
-        {% if not "nonav" in QUERY_PARAMS %}
-        <div class="row">
-            <div class="col-md-12">
-                <h1 id="testid"></h1>
-            </div>
+    <!-- Heading Row -->
+    {% if not "nonav" in QUERY_PARAMS %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 id="testid"></h1>
+        </div>
         <hr>
+    </div>
+    {% endif %}
+    <!-- /.row -->
+
+    {% if not "noform" in QUERY_PARAMS %}
+    {% cache 1000 httptest philipsahli adsense %}
+    {% include "philipsahli:httptest:static/includes/adsense.html" %}
+    {% endcache %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
+            {% if not "noform" in QUERY_PARAMS %}
+            {% include "philipsahli:httptest:static/includes/form.html" with obj=obj %}
+            <hr>
+            {% endif %}
         </div>
-        {% endif %}
-            <!-- /.row -->
+    </div>
 
-        {% if not "noform" in QUERY_PARAMS %}
-        {% cache 1000 httptest philipsahli adsense %}
-        {% include "philipsahli:httptest:static/includes/adsense.html" %}
-        {% endcache %}
-        {% endif %}
 
-        <div class="row">
-            <div class="col-md-8">
-                    {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
-                        {% if not "noform" in QUERY_PARAMS %}
-                             {% include "philipsahli:httptest:static/includes/form.html" with obj=obj %}
-                                <hr>
-                        {% endif %}
-            </div>
+    {% if not "nooverview" in QUERY_PARAMS %}
+
+    <!-- Call to Action Well -->
+    <h2>Overview</h2>
+    <div class="well">
+        <div class="row-fluid">
+            {% for run in obj.data.runs reversed %}
+            <h4>{{ run.datetime }} <small><a href="#{{run.datetime}}">Details</a></small>
+                <!--<span class="glyphicon glyphicon-heart"></span>-->
+                <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success label-">success={{run.total.success}}</span>
+                <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
+                <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
+                <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
+            </h4>
+            {% empty %}
+            <p>No Runs yet</p>
+            {% endfor %}
         </div>
+    </div>
+
+    {% endif %}
+
+    {% for run in obj.data.runs reversed %}
+
+    {% if "runonly" in QUERY_PARAMS and QUERY_PARAMS.runonly == run.datetime or "runonly" not in QUERY_PARAMS %}
+
+    {% if forloop.first and "runonly" not in QUERY_PARAMS %}
+    <h2>Runs</h2> 
+    {% endif %}
+    {% cache 500 run obj.data.testid run.datetime %}
+    <div class="container well">
+        <div class="row-fluid">
+
+            <h3 id="{{ run.datetime}}">{{ run.datetime }}</h3>
+            {% if "nonav" in QUERY_PARAMS %}
+            <h4>
+                {% if FRONTEND_API_URL %}
+                <a href="{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2">{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2</a>
+                {% else %}
+                <a href="{{BASE_URL}}/userland/{{RUNTIME_USER}}/httptest/static/test.html?testid={{obj.data.testid}}&version=2">{{BASE_URL}}/userland/{{RUNTIME_USER}}/httptest/static/test.html?testid={{obj.data.testid}}&version=2</a>
+                {% endif %}
+            </h4>
+            {% endif %}
+            <h4>
+                <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{run.total.success}}</span>
+                <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
+                <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
+                <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
+            </h4>
 
 
-        {% if not "nooverview" in QUERY_PARAMS %}
-
-            <!-- Call to Action Well -->
-            <h2>Overview</h2>
-            <div class="well">
-                <div class="row-fluid">
-                    {% for run in obj.data.runs reversed %}
-                    <h4>{{ run.datetime }} <small><a href="#{{run.datetime}}">Details</a></small>
-                        <!--<span class="glyphicon glyphicon-heart"></span>-->
-                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success label-">success={{run.total.success}}</span>
-                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
-                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
-                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
-                    </h4>
-                    {% empty %}
-                    <p>No Runs yet</p>
+            <div class="col-md-6 smaller-text">
+                <h3>Overview</h3>
+                {% for url, l in run.result.items %} {% if l.success %}
+                <div class="alert alert-success" role="alert">{{ url }} {% else %}
+                    <div class="alert alert-warning" role="alert">{{ url }} {% endif %}
+                        <p>
+                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{l.result_counters.success}}</span>
+                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{l.result_counters.failures}}</span>
+                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{l.result_counters.errors}}</span>
+                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{l.result_counters.skipped}}</span>
+                        </p>
+                    </div>
+                    {% endfor %}
+                    <h3>SSL Info</h3>
+                    {% for url, info in run.ssl_info.items %}
+                    <h4>Environment <strong>{{url}}</strong></h4>
+                    {% if not info.items %}
+                    <p><small><code>{{ info }}</code></small></p>
+                    {% else %}
+                    {% include "philipsahli:httptest:static/includes/table_ssl.html" with info=info %}
+                    {% endif %}
                     {% endfor %}
                 </div>
-            </div>
 
-        {% endif %}
-
-            {% for run in obj.data.runs reversed %}
-
-            {% if "runonly" in QUERY_PARAMS and QUERY_PARAMS.runonly == run.datetime or "runonly" not in QUERY_PARAMS %}
-
-            {% if forloop.first and "runonly" not in QUERY_PARAMS %}
-            <h2>Runs</h2> 
-            {% endif %}
-           
-            {% cache 500 run obj.data.testid run.datetime %}
-            <div class="container well">
-                <div class="row-fluid">
-
-                    <h3 id="{{ run.datetime}}">{{ run.datetime }}</h3>
-                    {% if "nonav" in QUERY_PARAMS %}
-                    <h4>
-                        {% if FRONTEND_API_URL %}
-                               <a href="{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2">{{FRONTEND_BASE_URL}}/test/?testid={{obj.data.testid}}&version=2</a>
-                        {% else %}
-                               <a href="{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2">{{BASE_URL}}/fastapp/httptest/static/test.html?testid={{obj.data.testid}}&version=2</a>
+                <div class="col-md-6 smaller-text">
+                    <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
+                    <h4>{{ url }}</h4> {% for failure in l.failures %}
+                    <div class="alert alert-warning" role="alert">
+                        <h5>{{failure.message}}</h5>
+                        {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
+                        {% if not "nobuttons" in QUERY_PARAMS %}
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
                         {% endif %}
-                    </h4>
-                    {% endif %}
-                    <h4>
-                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{run.total.success}}</span>
-                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{run.total.failures}}</span>
-                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{run.total.errors}}</span>
-                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{run.total.skipped}}</span>
-                    </h4>
-
-
-                    <div class="col-md-6 smaller-text">
-                        <h3>Overview</h3>
-                            {% for url, l in run.result.items %} {% if l.success %}
-                            <div class="alert alert-success" role="alert">{{ url }} {% else %}
-                                <div class="alert alert-warning" role="alert">{{ url }} {% endif %}
-                                    <p>
-                                        <span class="label {% ifequal run.total.success 0 %}opac{% endifequal %} label-success">success={{l.result_counters.success}}</span>
-                                        <span class="label {% ifequal run.total.failures 0 %}opac{% endifequal %} label-warning">failures={{l.result_counters.failures}}</span>
-                                        <span class="label {% ifequal run.total.errors 0 %}opac{% endifequal %} label-danger">errors={{l.result_counters.errors}}</span>
-                                        <span class="label {% ifequal run.total.skipped 0 %}opac{% endifequal %} label-default">skipped={{l.result_counters.skipped}}</span>
-                                    </p>
-                                </div>
-                                {% endfor %}
-                        <h3>SSL Info</h3>
-                            {% for url, info in run.ssl_info.items %}
-                                <h4>Environment <strong>{{url}}</strong></h4>
-                                {% if not info.items %}
-                                <p><small><code>{{ info }}</code></small></p>
-                                {% else %}
-                                {% include "philipsahli:httptest:static/includes/table_ssl.html" with info=info %}
-                                {% endif %}
-                            {% endfor %}
+                        <div id="{{failure.id}}headers" class="collapse">
+                            <h4>Headers</h4>
+                            <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
+                            <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                        </div>
+                        <div id="{{failure.id}}body" class="collapse">
+                            <h4>Response Body</h4>
+                            <p><code>{{failure.response_text}}</code></p>
+                        </div>
+                    </div>
+                    {% endfor %} {% for error in l.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <h5>{{error.message}}</h5>
+                        {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
+                        {% if not "nobuttons" in QUERY_PARAMS %}
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show Headers</button>
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show Response Body</button>
+                        {% endif %}
+                        <div id="{{error.id}}headers" class="collapse">
+                            <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
+                            <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
                         </div>
 
-                        <div class="col-md-6 smaller-text">
-                            <h3>Failures / Errors</h3> {% for url, l in run.result.items %} {% if l.failures|length > 0 or l.errors|length > 0 %}
-                            <h4>{{ url }}</h4> {% for failure in l.failures %}
-                            <div class="alert alert-warning" role="alert">
-                                <h5>{{failure.message}}</h5>
-                                {% include "philipsahli:httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
-                                {% if not "nobuttons" in QUERY_PARAMS %}
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
-                                {% endif %}
-                                <div id="{{failure.id}}headers" class="collapse">
-                                    <h4>Headers</h4>
-                                    <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
-                                    <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
-                                </div>
-                                <div id="{{failure.id}}body" class="collapse">
-                                    <h4>Response Body</h4>
-                                    <p><code>{{failure.response_text}}</code></p>
-                                </div>
-                            </div>
-                            {% endfor %} {% for error in l.errors %}
-                            <div class="alert alert-danger" role="alert">
-                                <h5>{{error.message}}</h5>
-                                {% include "philipsahli:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
-                                {% if not "nobuttons" in QUERY_PARAMS %}
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show Headers</button>
-                                <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show Response Body</button>
-                                {% endif %}
-                                <div id="{{error.id}}headers" class="collapse">
-                                <h5>Request Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
-                                <h5>Response Headers</h5> {% include "philipsahli:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
-                                </div>
-
-                                <div id="{{error.id}}body" class="collapse">
-                                    <h4>Response Body</h4>
-                                    <p><code>{{error.response_text}}</code></p>
-                                </div>
-                            </div>
-                            {% endfor %}
-                            <!--{% for skipped in l.skipped %} 
+                        <div id="{{error.id}}body" class="collapse">
+                            <h4>Response Body</h4>
+                            <p><code>{{error.response_text}}</code></p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <!--{% for skipped in l.skipped %} 
                     <div class="alert alert-info" role="alert">
                         <p>URL:     {{skipped}}</p>
                     </div>
                 {% endfor %}-->
-                            {% endif %} {% endfor %}
-                        </div>
-                    </div>
+                    {% endif %} {% endfor %}
                 </div>
-                {% endcache %}
-                {% endif %}
-                {% endfor %} {% endifequal %} {% empty%}
-                <p>No Runs yet</p>
-                {% endfor %}
-
-
-{% endblock %}
+            </div>
+        </div>
+        {% endcache %}
+        {% endif %}
+        {% endfor %} {% endifequal %} {% empty%}
+        <p>No Runs yet</p>
+        {% endfor %}
+        {% endif %}
+        {% endblock %}

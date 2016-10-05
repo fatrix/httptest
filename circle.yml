@@ -12,4 +12,4 @@ deployment:
   test:
     branch: master
     commands:
-      - echo "pass"
+      - curl -XPOST -H "Authorization: Token c0f6b34d0872b8778fca52be75a2a9bda9916a41" https://codeanywhere.sahli.net/core/api/base/httptest/recreate/

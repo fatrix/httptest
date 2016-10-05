@@ -1,0 +1,25 @@
+                        {% if test.data.runs|length_is:"0" %}
+                        <h3 class="empty">{% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+                        <h5>Has {{ test.data.runs|length }} runs</h3>
+                        <h5>Has {{ test.data.config_data_dict.tests|length }} tests.</h3>
+                        <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span>
+
+                        {% elif test.data.runs.0.total.success < test.data.runs.0.total.run %}
+
+                        <h3 class="failed">{% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+                        <h5>Has {{ test.data.runs|length }} runs</h3>
+                        <h5>Has {{ test.data.config_data_dict.tests|length }} tests</h3>
+                        <span class="glyphicon glyphicon-fire" aria-hidden="true"></span>
+                        {% else %}
+
+                        <h3 class="success">{% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+                        <h5>Has {{ test.data.runs|length }} runs</h3>
+                        <h5>Has {{ test.data.config_data_dict.tests|length }} tests.</h3>
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        {% endif %}
+
+                        {% if not FRONTEND_API_URL %}
+                        <a href="/userland/{{RUNTIME_USER}}/httptest/static/test.html?testid={{test.data.testid}}&version=2">&#8594; Go</a>
+                        {% else %}
+                        <a href="/test/?testid={{test.data.testid}}&version=2">&#8594; Go</a>
+                        {% endif %}

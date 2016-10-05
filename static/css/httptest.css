@@ -85,3 +85,14 @@ opacity: 0.4;
 .warning {
 color: orange;
 }
+
+.failed {
+    color: red;
+}
+.empty {
+    color: gray;
+}
+
+.success {
+    color: green;
+}

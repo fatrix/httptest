@@ -1,80 +1,81 @@
 {% extends "philipsahli:httptest:static/base.html" %}
-
 {% load humanize %}
+{% load datastore %}
 
+{% block body %}
+<div class="container">
+    <div class="jumbotron">
+        <h1>HTTPTest</h1>
+        <h2>Testing Tool for HTTP-Based Services</h2>
+        <p>Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring</p>
+        <ul>
+            <li>HTTP-Based Service Testing</li>
+            <li>Email Alerting</li>
+            <li>SSL Certificate Monitoring</li>
+        </ul>
+    </div>
+</div>
 
-    {% block body %}
-    <div class="container">
-        <div class="jumbotron">
-            <h1>HTTPTest</h1>
-            <h2>Testing Tool for HTTP-Based Services</h2>
-            <p>Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring</p>
-<ul>
-  <li>HTTP-Based Service Testing</li>
-  <li>Email Alerting</li>
-  <li>SSL Certificate Monitoring</li>
-</ul>
+{% data_for_user as data %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 col-md-push-1">
+            {% if is_authenticated %}
+            <h3>Welcome {{ user.username }}</h3>
+            <h4>You get notified to {{ user.email }}</h4>
+            <h4>You have {{ data|length }} tests.</h4>
+            {% else %}
+            <h3>Welcome</h3>
+            <p><a href="{{ LOGIN_URL }}">&#8594; Login</a> to use HTTPTest</p>
+            {% endif %}
+        </div>
+
+        <div class="col-md-5">
+            <h3>Example <small>Start with this simple configuration</small></h3>
+            {% include "philipsahli:httptest:static/includes/example.html" %}
+            <hr/>
         </div>
     </div>
+</div>
 
-    <!-- Page Content -->
-    <div class="container">
+<div class="container-fluid">
 
-        <!-- Heading Row -->
-        <div class="row">
-            <div class="col-md-12">
-                {% if FRONTEND_API_URL %}
-                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">Create new test &raquo;</a>
-                <div></div>
-                <div class="input-group col-md-4" style="padding-top: 10px;">
-                  <input id="email" type="text" class="form-control">
-                  <span class="input-group-btn">
-                    <button id="sendmail" class="btn btn-primary" type="button">Mail my links &raquo;</button>
-                  </span>
-                </div><!-- /input-group -->
-
-
-                {% else %}
-                <a target="_blank" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Create new test &raquo;</a>
-                <!--<a target="_blank" id="sendmail" href="/fastapp/api/username/{{RUNTIME_USER}}/base/httptest/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Mail my links &raquo;</a>-->
-                <div></div>
-                <div class="input-group col-md-4" style="padding-top: 10px;">
-                  <input id="email" type="text" class="form-control">
-                  <span class="input-group-btn">
-                    <button id="sendmail" class="btn btn-primary" type="button">Mail my links &raquo;</button>
-                  </span>
-                </div><!-- /input-group -->
-
-                {% endif %}
-
-
-
-                <div>
-                    <h3>Example <small>Start with this simple configuration</small></h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h4>YAML Data <small>If you prefer JSON format translate it on <a href="http://yamltojson.com/">yamltojson.com</a></small></h4>
-                            <code>environments:
-    - name: "sahli"
-      base_url: "https://sahli.net"
-    - name: "tumbo.io"
-      base_url: "https://tumbo.io"
-tests:
-    - name: "test_home"
-      uri: "/"
-      asserts:
-         assert_status_code_is: 200</code>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.col-md-4 -->
-            </div>
-        <hr>
+    {% if is_authenticated %}
+    <div class="row">
+        <div class="col-md-3 col-md-push-1">
+            <div></div>
+            {% include "philipsahli:httptest:static/includes/forms.html" %}
+            <div></div>
+            <p>You can create up to 5 tests</p>.
         </div>
-            <!-- /.row -->
+        <div class="col-md-6">
+            <div class="row">
+                <h3>Your Tests</h3>
+                {% for test in data|dictsort:"data.runs" reversed %}
+                <div class="col-md-4">
+                    {% include "philipsahli:httptest:static/includes/test_overview.html" with test=test %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-2">
+            {% include "philipsahli:httptest:static/includes/twitter.html" %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-md-3 col-md-push-1">
+        </div>
+    </div>
+    {% endif %}
 
-        {% include "philipsahli:httptest:static/includes/adsense.html" %}
-        {% include "philipsahli:httptest:static/includes/twitter.html" %}
-
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9 col-md-push-3">
+                {% include "philipsahli:httptest:static/includes/adsense.html" %}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
