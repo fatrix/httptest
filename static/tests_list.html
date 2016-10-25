@@ -1,0 +1,42 @@
+{% extends "philipsahli:httptest:static/base.html" %}
+{% load humanize %}
+{% load datastore %}
+
+{% block body %}
+
+<!-- Page Content -->
+<div class="container">
+
+    {% if is_authenticated %}
+
+    <div class="">
+        <div class="row">
+            <div class="col-md-8">
+                <h3>Your Tests  {% include "philipsahli:httptest:static/includes/button_create_test.html" %}</h3>
+            </div>
+        </div>
+    </div>
+
+
+    {% data_for_user as data %}
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                {% for test in data|dictsort:"data.runs" reversed %}
+                    {% for run in test.data.runs %}
+                        <!-- TEST: {{ run.datetime|safe }} -->
+                    {% endfor %}
+                <div class="col-md-4 col-sm-6">
+                    {% include "philipsahli:httptest:static/includes/test_overview.html" with test=test %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <hr>
+
+</div>
+
+{% endblock %}

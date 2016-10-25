@@ -3,79 +3,155 @@
 {% load datastore %}
 
 {% block body %}
-<div class="container">
-    <div class="jumbotron">
-        <h1>HTTPTest</h1>
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>HTTPTest Project</h1>
         <h2>Testing Tool for HTTP-Based Services</h2>
         <p>Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring</p>
-        <ul>
-            <li>HTTP-Based Service Testing</li>
-            <li>Email Alerting</li>
-            <li>SSL Certificate Monitoring</li>
-        </ul>
     </div>
 </div>
 
-{% data_for_user as data %}
-<div class="container-fluid">
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Marketing Icons Section -->
     <div class="row">
-        <div class="col-md-4 col-md-push-1">
-            {% if is_authenticated %}
-            <h3>Welcome {{ user.username }}</h3>
-            <h4>You get notified to {{ user.email }}</h4>
-            <h4>You have {{ data|length }} tests.</h4>
-            {% else %}
-            <h3>Welcome</h3>
-            <p><a href="{{ LOGIN_URL }}">&#8594; Login</a> to use HTTPTest</p>
-            {% endif %}
-        </div>
-
-        <div class="col-md-5">
-            <h3>Example <small>Start with this simple configuration</small></h3>
-            {% include "philipsahli:httptest:static/includes/example.html" %}
-            <hr/>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid">
-
-    {% if is_authenticated %}
-    <div class="row">
-        <div class="col-md-3 col-md-push-1">
-            <div></div>
-            {% include "philipsahli:httptest:static/includes/forms.html" %}
-            <div></div>
-            <p>You can create up to 5 tests</p>.
-        </div>
-        <div class="col-md-6">
-            <div class="row">
-                <h3>Your Tests</h3>
-                {% for test in data|dictsort:"data.runs" reversed %}
-                <div class="col-md-4">
-                    {% include "philipsahli:httptest:static/includes/test_overview.html" with test=test %}
+        <!--<div class="col-lg-12">
+            <h1 class="page-header">
+                Welcome to HTTPTest
+            </h1>
+        </div>-->
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-magic"></i> Service Testing</h4>
                 </div>
-                {% endfor %}
+                <div class="panel-body">
+                    <p>Declare in a human readable format the <strong>expected behaviour</strong> of a service and run tests with assert instructions.</p>
+                    <a href="#" class="btn btn-default">Learn More</a>
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            {% include "philipsahli:httptest:static/includes/twitter.html" %}
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-bell" aria-hidden="true"></i> Monitoring & Alerting</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Service Monitoring & Alerting<strong>reduces your Ops reaction time</strong> to fix an issue by repeated runs and alerting by email.</p>
+                    <a href="#" class="btn btn-default">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4><i class="fa fa-fw fa-certificate"></i> SSL Monitoring</h4>
+                </div>
+                <div class="panel-body">
+                    <p>Verifies SSL related configuration and the <strong>expiration date</strong> of the server's certificate to plan the renewal of the certificate earlier.</p>
+                    <a href="#" class="btn btn-default">Learn More</a>
+                </div>
+            </div>
         </div>
     </div>
-    {% else %}
-    <div class="row">
-        <div class="col-md-3 col-md-push-1">
-        </div>
-    </div>
-    {% endif %}
+    <!-- /.row -->
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-9 col-md-push-3">
-                {% include "philipsahli:httptest:static/includes/adsense.html" %}
+    <!-- Portfolio Section -->
+    <!-- <div class="row"> 
+            <div class="col-lg-12">
+                <h2 class="page-header">Portfolio Heading</h2>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="portfolio-item.html">
+                    <img class="img-responsive img-portfolio img-hover" src="http://placehold.it/700x450" alt="">
+                </a>
             </div>
         </div>
+        -->
+
+    <!-- Features Section 
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header">Modern Business Features</h2>
+            </div>
+            <div class="col-md-6">
+                <p>The Modern Business template by Start Bootstrap includes:</p>
+                <ul>
+                    <li><strong>Bootstrap v3.3.7</strong>
+                    </li>
+                    <li>jQuery v1.11.1</li>
+                    <li>Font Awesome v4.2.0</li>
+                    <li>Working PHP contact form with validation</li>
+                    <li>Unstyled page elements for easy customization</li>
+                    <li>17 HTML pages</li>
+                </ul>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, omnis doloremque non cum id reprehenderit, quisquam totam aspernatur tempora minima unde aliquid ea culpa sunt. Reiciendis quia dolorum ducimus unde.</p>
+            </div>
+            <div class="col-md-6">
+                <img class="img-responsive" src="http://placehold.it/700x450" alt="">
+            </div>
+        </div>
+        -->
+
+    <hr>
+
+    <!-- Call to Action Section -->
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Contribute</h3>
+            <p>The source code is on Github <a href=="https://github.com/sahlinet/httptest">https://github.com/sahlinet/httptest</a> and is waiting for contributors. HTTPTest is based on <a href="https://tumbo.io">Tumbo</a> and everybody can run HTTPTest on every infrastructure with Tumbo.</p> 
+            <h3>Share 
+                <a style="color: black;" href="https://twitter.com/intent/tweet?text=A Testing Tool for HTTP-Based Services, including Monitoring and more!! https://httptest.sahli.net Created by @philipsahli"><i class="fa fa-lg fa-twitter-square" aria-hidden="true"></i></a>
+                <a style="color: black;" href="https://twitter.com/intent/tweet?text=A Testing Tool for HTTP-Based Services, including Monitoring and more!! https://httptest.sahli.net Created by @philipsahli"><i class="fa fa-lg fa-google-plus-square" aria-hidden="true"></i></a></h3>
+        </div>
+        <div class="col-md-4">
+            <h3>Example</h3>
+            {% include "philipsahli:httptest:static/includes/example.html" %}
+        </div>
+        <div class="col-md-4">
+            {% include "philipsahli:httptest:static/includes/adsense_rectangle.html" %}
+        </div>
+        <div class="col-md-4">
+            <!--<a class="btn btn-lg btn-default btn-block" href="#">Call to Action</a>
+                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="T2ULZP643WVNA">
+                    <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                    <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </form>
+                -->
+        </div>
     </div>
+
+    <hr>
 </div>
 
 {% endblock %}

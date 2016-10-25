@@ -3,16 +3,21 @@
 <html lang="en">
 
 <head>
-<title>HTTPTest Tool :: Testing Tool for HTTP-Based Services</title>
-<meta http-equiv="Cache-control" content="no-cache">
-<meta name="charset" content="ISO-8859-1" />
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
 <meta name="description" content="Testing Tool for HTTP-Based Services - Declarative HTTP-Based Service Testing, Alerting and SSL Certificate Monitoring"/>
 <meta name="keywords" content="Application Testing, HTTP-Based, HTTP, Service Testing, Unittest, Python, Unittesting, Web, testing, HTTP, assert" />
 <meta name="copyright" content="Copyright &copy; 2016 sahli.net" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Philip Sahli" />
 <meta name="designer" content="Philip Sahli" />
-<meta name="robots" content="index, nofollow" />
-<meta name="googlebot" content="index, nofollow, noarchive" />
+
+<meta http-equiv="Cache-control" content="no-cache">
+
+<title>HTTPTest Tool :: Testing Tool for HTTP-Based Services</title>
+
 {% if FRONTEND_STATIC_URL %}
 <link rel="icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" />
 <link rel="shortcut icon" type="image/x-icon" href="{{FRONTEND_STATIC_URL}}favicon.ico" /> 
@@ -21,29 +26,31 @@
 <link rel="shortcut icon" type="image/x-icon" href="{{FASTAPP_STATIC_URL}}favicon.ico" /> 
 {% endif %}
 
-<!-- jquery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+<!-- Bootstrap Core CSS -->
+<link href="{{ FRONTEND_STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
 
+<!-- jQuery -->
+<script src="{{ FRONTEND_STATIC_URL }}js/jquery.js"></script>
+<!--<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script> -->
+
+<!-- Custom CSS -->
+<!--<link href="{{ FRONTEND_STATIC_URL }}css/modern-business.css" rel="stylesheet">-->
+<link href="{{ FRONTEND_STATIC_URL }}css/httptest.css" rel="stylesheet">
 {% if FRONTEND_STATIC_URL %}
 <script type="text/javascript" src="{{ FRONTEND_STATIC_URL }}js/httptest.js"></script>
 {% else %}
 <script type="text/javascript" src="{{ FASTAPP_STATIC_URL }}js/httptest.js"></script>
 {% endif %}
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<!-- Custom Fonts -->
+<link href="{{ FRONTEND_STATIC_URL }}css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-<!-- Optional theme -->
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">-->
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-{% if FRONTEND_STATIC_URL %}
-<link rel="stylesheet" href="{{ FRONTEND_STATIC_URL }}css/httptest.css">
-{% else %}
-<link rel="stylesheet" href="{{ FASTAPP_STATIC_URL }}css/httptest.css">
-{% endif %}
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
 {% block header %}
 {% endblock %}
@@ -54,6 +61,9 @@ window.user = "{{RUNTIME_USER}}";
 window.api_url = "{{FRONTEND_API_URL}}";
 {% endif %}
 </script>
+
+</head>
+
 
 </head>
 
@@ -71,13 +81,14 @@ window.api_url = "{{FRONTEND_API_URL}}";
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+
             <a class="navbar-brand" href="{% if FRONTEND_STATIC_URL %}/{% else %}{{FASTAPP_STATIC_URL}}index.html{% endif %}">
                 <img src="//placehold.it/150x50&text=HTTPTest" alt="">
             </a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-right">
                 {% if FRONTEND_STATIC_URL %}
                 <li>
                 <a href="/usage.html" title="How to use HTTPTest Tool">Usage</a>
@@ -93,43 +104,66 @@ window.api_url = "{{FRONTEND_API_URL}}";
                 <a href="{{ FASTAPP_STATIC_URL}}about.html">About</a>
                 </li>
                 {% endif %}
+
+                {% if is_authenticated %}
+                <li>
+                <a href="/mytests/">My Tests</a>
+                </li>
+                {% endif %}
+
                 <li>
                 {% if is_authenticated %}
-                    {% if LOGOUT_URL != None %}
-                    <a href="{{ LOGOUT_URL }}">Logout</a>
-                    {% else %}
-                    <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/admin/httptest/static/index.html">Logout</a>
-                    {% endif %}
+                {% if LOGOUT_URL != None %}
+                <a href="{{ LOGOUT_URL }}">Logout</a>
                 {% else %}
-                    {% if LOGIN_URL != None %}
-                    <a href="{{ LOGIN_URL }}">Login</a>
-                    {% else %}
-                    <a href="{% url 'cas-login' %}?service=/userland/admin/httptest/static/index.html">Login</a>
-                    {% endif %}
+                <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/admin/httptest/static/index.html">Logout</a>
+                {% endif %}
+                {% else %}
+                {% if LOGIN_URL != None %}
+                <a href="{{ LOGIN_URL }}">Login</a>
+                {% else %}
+                <a href="{% url 'cas-login' %}?service=/userland/admin/httptest/static/index.html">Login</a>
+                {% endif %}
                 {% endif %}
                 </li>
+
             </ul>
         </div>
+        <!-- /.navbar-collapse -->
     </div>
     <!-- /.container -->
 </nav>
+
 {% endif %}
 
 {% block body %}
 {% endblock %}
 
-<footer>
-    <div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <p>Copyright &copy; <a target="_blank" href="https://sahli.net">sahli.net</a> 2016 :: Running on <a href="https://tumbo.io">Tumbo</a></p>
+<!-- Footer -->
+<div class="container">
+    <footer>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>
+                Copyright &copy; <a target="_blank" href="https://sahli.net">sahli.net</a> 2016 :: Running on <a href="https://tumbo.io">Tumbo</a>
+                </p>
+            </div>
         </div>
-    </div>
-    </div>
-</footer>
-
+    </footer>
 </div>
-        {{ GOOGLE_ANALYTICS|safe }}
+
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+
+<!-- Script to Activate the Carousel -->
+<script>
+$('.carousel').carousel({
+interval: 5000 //changes the speed
+})
+</script>
+
+{{ GOOGLE_ANALYTICS|safe }}
 </body>
 
 </html>

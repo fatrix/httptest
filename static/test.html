@@ -3,9 +3,8 @@
 {% load humanize %}
 {% load cache %}
 
-
 {% block body %}
-{% if is_authenticated %}
+{% if is_authenticated or "noform" in QUERY_PARAMS %}
 <!-- Page Content -->
 <div class="container">
 
@@ -35,7 +34,6 @@
             {% endif %}
         </div>
     </div>
-
 
     {% if not "nooverview" in QUERY_PARAMS %}
 

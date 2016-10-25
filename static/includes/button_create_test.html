@@ -1,0 +1,5 @@
+                {% if FRONTEND_API_URL %}
+                <a target="_blank" href="{{FRONTEND_API_URL}}" class="btn btn-primary btn-primary">New <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                {% else %}
+                <a target="_blank" href="/userland/{{RUNTIME_USER}}/httptest/api/apy/entrypoint/execute/" class="btn btn-primary btn-primary">Create new test &raquo;</a>
+                {% endif %}

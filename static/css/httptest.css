@@ -5,7 +5,7 @@
  *     */
 
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+    padding-top: 50px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
 }
 
 .navbar-fixed-top .nav {
@@ -22,7 +22,7 @@ footer {
 
 @media(min-width:768px) {
     body {
-        padding-top: 100px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+        padding-top: 80px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
     }
 
     .navbar-fixed-top .navbar-brand {
@@ -30,12 +30,12 @@ footer {
     }
 }
 .alert {
-  padding: 5px !important
-  margin-bottom: 5px !important
-  display:inline-block;
+    padding: 5px !important
+    margin-bottom: 5px !important
+    display:inline-block;
 }
 .alert h4 {
-  margin-top: 30px !important
+    margin-top: 30px !important
 }
 .smaller-text {
     font-size: small;
@@ -68,9 +68,9 @@ table, div.collapse > p > code {
     padding-bottom:10px;
 }
 textarea {
-  border:1px solid #999999;
-  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
-  font-size: 12px !important
+    border:1px solid #999999;
+    font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+    font-size: 12px !important
 }
 .addsense {
     margin-top: 25px;
@@ -80,10 +80,10 @@ textarea {
     margin-top: 10px;
 }
 .opac {
-opacity: 0.4;
+    opacity: 0.4;
 }
 .warning {
-color: orange;
+    color: orange;
 }
 
 .failed {
@@ -95,4 +95,42 @@ color: orange;
 
 .success {
     color: green;
+}
+/*.jumbotron {
+margin-top: -19px;
+}*/
+
+
+@media only screen and (min-width : 481px) {
+    .flex-row.row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .flex-row.row > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
+    .flex-row.row:after, 
+    .flex-row.row:before {
+        display: flex;
+    }
+}
+
+div.md > h1 {
+    padding-top: 30px;
+    padding-bottom: 40px;
+}
+
+div.md > h2 {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+div.md > h3 {
+    padding-top: 20px;
+    padding-bottom: 15px;
+}
+
+div.md > h4 {
+    padding-top: 20px;
+    padding-bottom: 15px;
 }

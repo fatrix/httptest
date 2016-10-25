@@ -1,30 +1,25 @@
 $(document).ready(function() {
-
-
-    console.log("ready");
-
-    ;
     (function($) {
         $.extend({
             getQueryString: function(name) {
                 function parseParams() {
                     var params = {},
-                        e,
-                        a = /\+/g, // Regex for replacing addition symbol with a space
-                        r = /([^&=]+)=?([^&]*)/g,
-                        d = function(s) {
-                            return decodeURIComponent(s.replace(a, " "));
-                        },
-                        q = window.location.search.substring(1);
+        e,
+        a = /\+/g, // Regex for replacing addition symbol with a space
+        r = /([^&=]+)=?([^&]*)/g,
+        d = function(s) {
+            return decodeURIComponent(s.replace(a, " "));
+        },
+        q = window.location.search.substring(1);
 
-                    while (e = r.exec(q))
-                        params[d(e[1])] = d(e[2]);
+        while (e = r.exec(q))
+            params[d(e[1])] = d(e[2]);
 
-                    return params;
+        return params;
                 }
 
                 if (!this.queryStringParams)
-                    this.queryStringParams = parseParams();
+            this.queryStringParams = parseParams();
 
                 return this.queryStringParams[name];
             }
@@ -38,7 +33,7 @@ $(document).ready(function() {
     $("h1#testid").text(mytestid);
     // $("h1#version").text("RUNTIME-VERSION: " + version);
 
-    $( "button#sendmail" ).click(function() {
+    /*$( "button#sendmail" ).click(function() {
 
         $(this).prop('disabled', true);
         $("#email").prop('disabled', true);
@@ -52,9 +47,9 @@ $(document).ready(function() {
         $.ajax({
             success: function(data) {
                 $(that).text("Mail sent")
-                $(that).removeClass("btn-primary");
-                $(that).addClass("btn-success");
-                $("#email").val("");
+            $(that).removeClass("btn-primary");
+        $(that).addClass("btn-success");
+        $("#email").val("");
             },
             error: function(xhr) {
                 $(that).prop('disabled', false);
@@ -65,16 +60,9 @@ $(document).ready(function() {
             type: 'GET',
             url: email_url
         });
- 
-
-
-
-
-
-
-
 
     });
+    */
 
     csrftoken = $("input[name*='csrfmiddlewaretoken']").attr("value");
     $.ajaxSetup({
@@ -153,7 +141,5 @@ $(document).ready(function() {
             url: base_url + '?data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
         });
     });
-
-
 
 });

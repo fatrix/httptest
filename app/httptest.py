@@ -222,9 +222,18 @@ def func(self, data, version, response_obj=None):
                 tests.append(HTTPTest(**request_orig))
             elif version == 2:
                 for test_assert in request_orig['asserts'].iteritems():
+                    test_assert_new = list(copy.deepcopy(test_assert))
+                    for var_k, var_v in variables.iteritems():
+                        test_assert_new[1] = str(test_assert_new[1]).replace("{{%s}}" % var_k, var_v)
+                        try:
+                            test_assert_new[1] = int(test_assert_new[1])
+                        except:
+                            pass
+                    #print test_assert
+                    #print test_assert_new
                     N = 5
                     id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-                    tests.append(HTTPTestV2(self, id, test_assert, **request_orig))
+                    tests.append(HTTPTestV2(self, id, test_assert_new, **request_orig))
             else:
                 raise Exception("Unknown version %s" % version)
         suite.addTests(tests)
@@ -350,8 +359,8 @@ def func(self, data, version, response_obj=None):
             ssl_info[env] = info
 
         result_list[func] = {
-                "success": success, 
-                "result_counters": result_counters, 
+                "success": success,
+                "result_counters": result_counters,
                 "result": str(result), 
                 "failures": failures_list,
                 "errors": errors_list,
@@ -361,6 +370,5 @@ def func(self, data, version, response_obj=None):
     if not response_obj:
         return self.responses.JSONResponse((len(result_pool), result_list))
     else:
-        #return result_list, total_counters, result.ssl_info
-        return result_list, ssl_info, total_counters
+        return result_list, ssl_info, total_counters, success
 

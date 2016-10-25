@@ -1,18 +1,18 @@
-h1:after {
+/*h1:after {
     content:' ';
     display:block;
     margin-top: 10px;
     border:0.7px solid darkgrey;
-}
+}*/
 h2:after {
     content:' ';
     display:block;
     margin-top: 10px;
-    border:0.7px solid grey;
+    border:0.7px solid #F0F0F0;
 }
-h3:after {
+/*h3:after {
     content:' ';
     display:block;
     margin-top: 10px;
     border:0.5px solid lightgrey;
-}
+}*/

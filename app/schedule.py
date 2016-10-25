@@ -16,17 +16,20 @@ def func(self):
         try:
             failure_count_before = test.data['runs'][-1]['total']['failures'] + test.data['runs'][-1]['total']['errors']
 
+            url = "%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid'])
+            self.debug(self.rid, url)
             r = requests.post("%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid']))
-            self.info(self.rid, "Status-Code on call for run is: %s" % r.status_code)
+            self.info(self.rid, "status_code on call for run is: %s" % r.status_code)
             self.info(self.rid, r.text)
+            if r.status_code is not 200:
+                self.error(self.rid, "Could not invoke test (%s)" % r.status_code)
+                raise Exception("Could not invoke test (%s)" % r.status_code)
             result = json.loads(r.json()['returned']['content'])
             results.append(result)
             result_counters = result['message'][1]
             mydatetime = result['message'][2]
 
             ssl_info = result['message'][3]
-
-        
 
             failure_count_after = result_counters['failures'] + result_counters['errors']
 

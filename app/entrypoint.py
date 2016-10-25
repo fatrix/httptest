@@ -23,34 +23,17 @@ def func(self):
     if id:
         try:
             data = self.datastore.get("testid", id, lock=True, nowait=True)
+            self.info(self.rid, "Row for %s locked with lock=True")
         except LockException, e:
             self.error(self.rid, str(e))
+            self.error(self.rid, "Row for %s was locked with lock=True")
             raise Exception("Test already running")
         if not data:
             raise Exception("Not found")
-    # sendmail
-    if self.method == "GET" and self.GET.has_key("sendmail"):
-        try:
-            email = self.GET.get('email')
-            test_list = self.datastore.filter("email", email)
-            msg = ""
-            if len(test_list) > 0:
-                for test in test_list:
-                    testurl = utils.get_test_url(self, test.data['testid'], version, fq=True)
-                    msg+="%s: %s\n" % (test.data.get('name', "No name"), testurl)
-            else:
-                msg = "No test found"
-
-            subject = "HTTPTest - Links for %s" % email
-
-            utils.sendmail(self, email, subject, msg)
-
-            return self.responses.JSONResponse(json.dumps({"message": "sent"}))
-        except Exception, e:
-            self.error(self.rid, e.message)
-            return self.responses.JSONResponse(json.dumps({"message": "error", "details": e.message}))
 
     # redirect to static url
+    if self.method == "GET" and self.GET.get("JSON"):
+        return self.responses.JSONResponse(json.dumps(data))
     elif self.method == "GET":
         # create new test
         id=''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
@@ -76,6 +59,7 @@ def func(self):
         return self.responses.JSONResponse({'message': "delete"})
     # run
     elif self.method == "POST":
+        #import pprint; pprint.pprint(data.data, indent=4)
         user_id = self.identity['internalid']
         if not self.GET.has_key("from_store"):
             name = self.POST.get("name", None)
@@ -83,14 +67,17 @@ def func(self):
             save_data = self.POST.get("save_data", "no")
             schedule = self.POST.get("schedule", "no")
             config_url = self.POST.get("config_url", None)
-            email = self.POST.get("email", None)
+            email = self.POST.get("email", [])
+            email_list = [ addr.strip() for addr in self.POST["email"].split(',') ]
         else:
             name = data.data['name']
             config_data = data.data['config_data']
             save_data = data.data['save_data']
             schedule = data.data['schedule']
             config_url = data.data["config_url"]
-            email = data.data["email"]
+
+            # convert comma-separated list to list
+            email_list = [ addr.strip() for addr in data.data["email"].split(',') ]
 
         if config_url:
             r = requests.get(config_url, allow_redirects=True)
@@ -100,7 +87,7 @@ def func(self):
 
         data.data['config_url'] = config_url
         data.data['name'] = name
-        data.data['email'] = email
+        data.data['email'] = email_list
         data.data['user_id'] = user_id
         if "yes" in save_data:
             data.data['config_data'] = config_data
@@ -130,7 +117,7 @@ def func(self):
         if "yes" in save_data:
             data.data['config_data_dict'] = config
 
-        results, ssl_info, total_counter =  httptest.func(self, config, version, True)
+        results, ssl_info, total_counter, success =  httptest.func(self, config, version, True)
         mydatetime = datetime.now()
         runs = {
               'result': results,
@@ -138,6 +125,10 @@ def func(self):
               'total': total_counter,
               'datetime': str(mydatetime)
         }
+        data.data['last'] = {
+                'success': success,
+                'datetime': str(mydatetime)
+                }
         if data.data.has_key("runs"):
             data.data['runs'].append(runs)
             if len(data.data['runs']) > 20:
@@ -149,5 +140,5 @@ def func(self):
         self.datastore.update(data)
         self.datastore.session.commit()
         # send report
-        #utils.send_report(self, id, email, data.data['name'], run=mydatetime)
+        utils.send_report(self, id, email_list, data.data['name'], run=mydatetime)
         return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime), ssl_info), 'runs_count': len(data.data['runs'])}))

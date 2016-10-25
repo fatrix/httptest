@@ -1,12 +1,14 @@
-def sendmail(self, recipient, subject, message):
+def sendmail(self, recipients, subject, message):
     from boto.ses import connect_to_region
+
+    self.debug(self.rid, "sendmail to: "+str(recipients))
 
     conn = connect_to_region('us-east-1', aws_access_key_id=self.settings.AWS_KEY, aws_secret_access_key=self.settings.AWS_SECRET)
     result = conn.send_email(
             self.settings.EMAIL_SENDER, 
             subject,
             None,
-            to_addresses=[recipient],
+            to_addresses=recipients,
             format="html",
             html_body=message
         )
@@ -32,13 +34,20 @@ def send_report(self, id, email, name, run=None, subject=None):
     import requests
     html_url = get_test_url(self, id, fq=True)
     html_url+="&nonav&noform&nooverview&nobuttons"
+
+
     if run:
         html_url+="&runonly=%s" % urlquote(run)
+
+    self.debug(self.rid, "get report from url: "+str(html_url))
+
     r = requests.get(html_url)
     if r.status_code != 200:
         raise Exception("Loading of URL '%s' failed with status_code %s" % (html_url, status_code))
     if not subject:
         subject = "HTTPTest - Report %s" % name
+    if type(email) is not list:
+        email = [email]
     result = sendmail(self, email, subject, r.text)
     return result
 
@@ -50,7 +59,7 @@ def get_ssl_info(self, host, port):
         import socket
         import ssl
 
-        self.info(self.rid, "IN IT")
+        self.debug(self.rid, "get_ssl_info for %s:%s" % (host, port))
 
         CA_CERTS = "/etc/pki/tls/certs/ca-bundle.trust.crt"
 
@@ -66,12 +75,6 @@ def get_ssl_info(self, host, port):
                 cert = sslsock.getpeercert()
                 sock.close()
                 return cert
-
-
-        self.info(self.rid, str(self.GET))
-
-        self.info(self.rid, host)
-        self.info(self.rid, port)
 
         cert = getcert((host, int(port)))
         from datetime import datetime
