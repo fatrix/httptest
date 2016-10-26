@@ -141,5 +141,5 @@ def func(self):
         self.datastore.update(data)
         self.datastore.session.commit()
         # send report
-        utils.send_report(self, id, email_list, data.data['name'], run=mydatetime)
+        #utils.send_report(self, id, email_list, data.data['name'], run=mydatetime)
         return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime), ssl_info), 'runs_count': len(data.data['runs'])}))
