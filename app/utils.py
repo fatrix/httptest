@@ -1,3 +1,7 @@
+def debug():
+    from remote_pdb import RemotePdb
+    RemotePdb('127.0.0.1', 4444).set_trace()
+
 def sendmail(self, recipients, subject, message):
     from boto.ses import connect_to_region
 

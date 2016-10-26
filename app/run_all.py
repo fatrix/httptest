@@ -7,13 +7,13 @@ def func(self):
     from core.plugins.datastore import LockException
     time.sleep(0.2)
 
-    tests = self.datastore.all(lock=True, nowait=True)
+    tests = self.datastore.all(lock=False, nowait=False)
 
     results = []
 
     self.info(self.rid, "Starting for %s tests" % len(tests))
 
-    for test in tests:
+    def handle(test):
         try:
             self.info(self.rid, "start %s" % test.data.get("name", "No Name"))
             try:
@@ -33,7 +33,8 @@ def func(self):
             self.GET['json'] = True
             self.GET['from_store'] = True
             self.method = "POST"
-            #print list(self.siblings)
+            #from utils import debug
+            #debug()
             r = self.siblings.entrypoint(self)
             result = json.loads(r.json()['returned']['content'])
             results.append(result)
@@ -89,6 +90,7 @@ def func(self):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             s = str((exc_type, fname, exc_tb.tb_lineno))
             self.error(self.rid, str(e)+" (%s)" % s)
+            self.datastore.session.rollback()
 
         finally:
             self.info(self.rid, "Finally: %s" % test)
@@ -96,8 +98,12 @@ def func(self):
                 self.info(self.rid, "Lasts: %s" % test.data['last'].datetime)
             except:
                 pass
-            print self.datastore.update(test)
-            print self.datastore.session.commit()
+            self.datastore.update(test)
+            self.datastore.session.commit()
+
+
+    for test in tests:
+        handle(test)
 
     self.info(self.rid, "Ended for %s tests" % len(tests))
 

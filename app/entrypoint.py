@@ -60,6 +60,7 @@ def func(self):
     # run
     elif self.method == "POST":
         #import pprint; pprint.pprint(data.data, indent=4)
+        #from utils import debug; debug()
         user_id = self.identity['internalid']
         if not self.GET.has_key("from_store"):
             name = self.POST.get("name", None)
@@ -77,7 +78,7 @@ def func(self):
             config_url = data.data["config_url"]
 
             # convert comma-separated list to list
-            email_list = [ addr.strip() for addr in data.data["email"].split(',') ]
+            email_list = [ addr.strip() for addr in data.data["email"]]
 
         if config_url:
             r = requests.get(config_url, allow_redirects=True)
