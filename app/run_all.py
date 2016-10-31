@@ -93,8 +93,11 @@ def func(self):
             except:
                 pass
 
+            test.data["user_id"] = int(self.settings.IDENTITY)
+
             self.datastore.update(test)
             self.datastore.session.commit()
+
 
     for test in tests:
         handle(test)
