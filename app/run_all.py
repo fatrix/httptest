@@ -23,18 +23,10 @@ def func(self):
 
             url = "%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid'])
             self.debug(self.rid, url)
-            #r = requests.post("%s?json=&from_store&testid=%s" % (self.settings.SCHEDULE_URL, test.data['testid']))
-            #self.info(self.rid, "status_code on call for run is: %s" % r.status_code)
-            #self.info(self.rid, r.text)
-            #if r.status_code is not 200:
-            #    self.error(self.rid, "Could not invoke test (%s)" % r.status_code)
-            #    raise Exception("Could not invoke test (%s)" % r.status_code)
             self.GET['testid'] = test.data['testid']
             self.GET['json'] = True
             self.GET['from_store'] = True
             self.method = "POST"
-            #from utils import debug
-            #debug()
             r = self.siblings.entrypoint(self)
             result = json.loads(r.content)
             results.append(result)
@@ -70,11 +62,12 @@ def func(self):
                 if not type(info) is dict:
                     self.warn(self.rid, "Not a dict (%s)" % str(info))
                     continue
-                if not test.data.get('ssl', None):
-                    test.data['ssl'] = {}
-                if not test.data.['ssl_alarm'].get('%s' % info['serialNumber'], None):
+                if not test.data.get('ssl_alarm', None):
+                    test.data['ssl_alarm'] = {}
+                if not test.data['ssl_alarm'].get('%s' % info['serialNumber'], None):
+                    test.data['ssl_alarm'].clear()
                     test.data['ssl_alarm']['%s' % info['serialNumber']] = {}
-                for left in [2,  5,  10, 30]:
+                for left in [2,  5,  10, 30, 73]:
                     leftAlarmed = test.data['ssl_alarm']['%s' % info['serialNumber']].get(str(left), False)
                     if info['daysLeft'] == left and not leftAlarmed:
                         test.data['ssl_alarm']['%s' % info['serialNumber']][left] = True

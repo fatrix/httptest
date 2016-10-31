@@ -2,13 +2,11 @@ def func(self):
     import requests
     import json
     import utils
+
     import time
-
     from core.plugins.datastore import LockException
-
     time.sleep(0.2)
 
-    #tests = self.datastore.all(lock=False, nowait=False)
     tests = self.datastore.filter("schedule", "yes")
 
     results = []
@@ -64,30 +62,34 @@ def func(self):
                 if not type(info) is dict:
                     self.warn(self.rid, "Not a dict (%s)" % str(info))
                     continue
-                if not test.data.get('ssl_alarmed', None):
-                    test.data['ssl_alarmed'] = {}
-                for left in [2,  5,  10, 30]:
-                    leftAlarmed = test.data['ssl_alarmed'].get(str(left), False)
+                if not test.data.get('ssl_alarm', None):
+                    test.data['ssl_alarm'] = {}
+                if not test.data['ssl_alarm'].get('%s' % info['serialNumber'], None):
+                    test.data['ssl_alarm'].clear()
+                    test.data['ssl_alarm']['%s' % info['serialNumber']] = {}
+                for left in [2,  5,  10, 30, 73]:
+                    leftAlarmed = test.data['ssl_alarm']['%s' % info['serialNumber']].get(str(left), False)
                     if info['daysLeft'] == left and not leftAlarmed:
-                        test.data['ssl_alarmed'][left] = True
+                        test.data['ssl_alarm']['%s' % info['serialNumber']][left] = True
 
                         subject = "HTTPTest - Test '%s': The SSL certificate on environment '%s' will expire in %s days!" % (test.data['name'], env, info['daysLeft'])
                         utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)
 
         except Exception, e:
+            import sys, os
             import inspect
             lineno = inspect.currentframe().f_back.f_lineno
-            import sys, os
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             s = str((exc_type, fname, exc_tb.tb_lineno))
+
             self.error(self.rid, str(e)+" (%s)" % s)
             self.datastore.session.rollback()
 
         finally:
             self.info(self.rid, "Finally: %s" % test)
             try:
-                self.info(self.rid, "Last: %s" % test.data['last'].datetime)
+                self.info(self.rid, "Lasts: %s" % test.data['last'].datetime)
             except:
                 pass
             self.datastore.update(test)
