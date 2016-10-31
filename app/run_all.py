@@ -70,23 +70,26 @@ def func(self):
                 if not type(info) is dict:
                     self.warn(self.rid, "Not a dict (%s)" % str(info))
                     continue
-                if not test.data.get('ssl_alarmed', None):
-                    test.data['ssl_alarmed'] = {}
+                if not test.data.get('ssl', None):
+                    test.data['ssl'] = {}
+                if not test.data.['ssl_alarm'].get('%s' % info['serialNumber'], None):
+                    test.data['ssl_alarm']['%s' % info['serialNumber']] = {}
                 for left in [2,  5,  10, 30]:
-                    leftAlarmed = test.data['ssl_alarmed'].get(str(left), False)
+                    leftAlarmed = test.data['ssl_alarm']['%s' % info['serialNumber']].get(str(left), False)
                     if info['daysLeft'] == left and not leftAlarmed:
-                        test.data['ssl_alarmed'][left] = True
+                        test.data['ssl_alarm']['%s' % info['serialNumber']][left] = True
 
                         subject = "HTTPTest - Test '%s': The SSL certificate on environment '%s' will expire in %s days!" % (test.data['name'], env, info['daysLeft'])
                         utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)
 
         except Exception, e:
+            import sys, os
             import inspect
             lineno = inspect.currentframe().f_back.f_lineno
-            import sys, os
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             s = str((exc_type, fname, exc_tb.tb_lineno))
+
             self.error(self.rid, str(e)+" (%s)" % s)
             self.datastore.session.rollback()
 
