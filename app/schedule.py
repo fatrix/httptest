@@ -2,9 +2,10 @@ def func(self):
     import requests
     import json
     import utils
-
     import time
+
     from core.plugins.datastore import LockException
+
     time.sleep(0.2)
 
     #tests = self.datastore.all(lock=False, nowait=False)
@@ -29,7 +30,7 @@ def func(self):
             self.GET['from_store'] = True
             self.method = "POST"
             r = self.siblings.entrypoint(self)
-            result = json.loads(r.json()['returned']['content'])
+            result = json.loads(r.content)
             results.append(result)
             result_counters = result['message'][1]
             mydatetime = result['message'][2]
@@ -53,7 +54,7 @@ def func(self):
                 subject = "HTTPTest - Test '%s' recovered" % test.data['name']
                 msg = "Test %s recovered" % (test.data['name'])
 
-            self.info(self.rid, "%s %s" % (str(send_alarm), str(send_recover)))
+            self.info(self.rid, "Alarm: %s %s" % (str(send_alarm), str(send_recover)))
             if send_alarm or send_recover:
                 self.info(self.rid, "Send Mail to %s" % test.data['email'])
                 utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)

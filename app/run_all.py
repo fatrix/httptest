@@ -36,7 +36,7 @@ def func(self):
             #from utils import debug
             #debug()
             r = self.siblings.entrypoint(self)
-            result = json.loads(r.json()['returned']['content'])
+            result = json.loads(r.content)
             results.append(result)
             result_counters = result['message'][1]
             mydatetime = result['message'][2]
@@ -67,8 +67,6 @@ def func(self):
 
             # SSL
             for env, info in ssl_info.items():
-                #from remote_pdb import RemotePdb
-                #RemotePdb('127.0.0.1', 4444).set_trace()
                 if not type(info) is dict:
                     self.warn(self.rid, "Not a dict (%s)" % str(info))
                     continue
@@ -98,9 +96,9 @@ def func(self):
                 self.info(self.rid, "Lasts: %s" % test.data['last'].datetime)
             except:
                 pass
+
             self.datastore.update(test)
             self.datastore.session.commit()
-
 
     for test in tests:
         handle(test)

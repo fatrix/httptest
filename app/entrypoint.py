@@ -34,7 +34,7 @@ def func(self):
     # redirect to static url
     if self.method == "GET" and self.GET.get("JSON"):
         return self.responses.JSONResponse(json.dumps(data))
-    elif self.method == "GET":
+    elif self.method == "GET" and not id:
         # create new test
         id=''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(20))
         json_data = {}
@@ -61,7 +61,6 @@ def func(self):
     elif self.method == "POST":
         #import pprint; pprint.pprint(data.data, indent=4)
         #from utils import debug; debug()
-        user_id = self.identity['internalid']
         if not self.GET.has_key("from_store"):
             name = self.POST.get("name", None)
             config_data = self.POST.get("config_data", None)
@@ -89,7 +88,6 @@ def func(self):
         data.data['config_url'] = config_url
         data.data['name'] = name
         data.data['email'] = email_list
-        data.data['user_id'] = user_id
         if "yes" in save_data:
             data.data['config_data'] = config_data
             data.data['save_data'] = save_data
