@@ -4,8 +4,6 @@ def func(self):
     import utils
 
     import time
-    from core.plugins.datastore import LockException
-    time.sleep(0.2)
 
     tests = self.datastore.filter("schedule", "yes")
 
@@ -55,7 +53,10 @@ def func(self):
             self.info(self.rid, "Alarm: %s %s" % (str(send_alarm), str(send_recover)))
             if send_alarm or send_recover:
                 self.info(self.rid, "Send Mail to %s" % test.data['email'])
-                utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)
+                try:
+                    utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)
+                except Exception, e:
+                    self.error(self.rid, "Exception from utils.send_report")
 
             # SSL
             for env, info in ssl_info.items():
