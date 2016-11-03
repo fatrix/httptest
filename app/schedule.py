@@ -67,7 +67,7 @@ def func(self):
                 if not test.data['ssl_alarm'].get('%s' % info['serialNumber'], None):
                     test.data['ssl_alarm'].clear()
                     test.data['ssl_alarm']['%s' % info['serialNumber']] = {}
-                for left in [2,  5,  10, 30, 73]:
+                for left in [2,  5,  10, 30]:
                     leftAlarmed = test.data['ssl_alarm']['%s' % info['serialNumber']].get(str(left), False)
                     if info['daysLeft'] == left and not leftAlarmed:
                         test.data['ssl_alarm']['%s' % info['serialNumber']][left] = True
