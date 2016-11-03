@@ -1,5 +1,5 @@
-<p>The HTTPTest Tool helps execute different requests <strong>tests</strong> to multiple <strong>environments</strong>. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com.</p>
-<p>Therefore the following requests should be tested:</p>
+<p>The HTTPTest Tool sends different <strong>tests</strong> requests to multiple <strong>environments</strong>. For example, you are hosting a website with a blog and a private section. For testing purposes you deployed a version available under test.example.com and the real site under example.com. You need to test the correct behaviour of the different instances and their configuration.</p>
+<p>The following URLs needs to be tested:</p>
 <pre><code>GET http://test.example.com/blog HTTP/1.1
 GET http://test.example.com/private HTTP/1.1
 
@@ -12,7 +12,7 @@ GET http://example.com/private HTTP/1.1
 GET https://example.com/private HTTP/1.1
 GET https://example.com/blog HTTP/1.1
 </code></pre>
-<p>The following configuration would achieve the above situation.</p>
+<p>The following configuration would describe the test run.</p>
 <pre><code>environments:
     - name:      test
       base_url:  http://test.example.com
@@ -62,7 +62,7 @@ tests:
 <p>The path to send the request to.</p>
 <h4>method</h4>
 <p>Default: <code>GET</code></p>
-<p>If <code>POST</code>, you can define the data (JSON format) in the key <code>data</code>. If the data is recognized as URL (starting with <code>http</code>), the data is loaded from this URL.</p>
+<p>If <code>POST</code>, you can define the data (JSON format) in the key <code>data</code>. If the data is recognized as URL (starting with <code>http</code>), the data is loaded from this URL. The data is sent with Content-Type <code>application/xml</code> if the string starts with <code>&lt;</code>.</p>
 <h3>skip</h3>
 <p>With the key <code>skip</code> the entire request or all requests to an environment will be skipped. A value is optional and can contain any reason.</p>
 <h3>ssl_verify</h3>
