@@ -12,4 +12,4 @@ deployment:
   test:
     branch: master
     commands:
-        - 'curl -XPOST --header "Authorization: Token bc172e172d56b05353d76f446168af24ddc64af7" https://tumbo.sahli.net/core/api/base/httptest/recreate/'
+        - 'curl -XPOST --header "Authorization: Token bc172e172d56b05353d76f446168af24ddc64af7" https://tumbo.sahli.net/core/api/base/httptest/restart/'
