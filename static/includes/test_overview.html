@@ -1,18 +1,18 @@
 {% if test.data.runs|length_is:"0" or not test.data.last %}
-<h3 class="empty"><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span> {% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+<h3 class="empty"><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span> {% if test.data.schedule == "yes" %} <i class="fa fa-clock-o" aria-hidden="true"></i> {% endif %}{% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
 <h5>Has {{ test.data.runs|length }} runs</h3>
 <h5>Has {{ test.data.config_data_dict.tests|length }} tests</h3>
 
 {% elif test.data.last.success %}
 
-<h3 class="success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> {% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+<h3 class="success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> {% if test.data.schedule == "yes" %} <i class="fa fa-clock-o" aria-hidden="true"></i> {% endif %} {% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
 <h5>Has {{ test.data.runs|length }} runs</h3>
 <h5>Has {{ test.data.config_data_dict.tests|length }} tests</h3>
 
 
 {% else %}
 
-<h3 class="failed"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span> {% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
+<h3 class="failed"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span> {% if test.data.schedule == "yes" %} <i class="fa fa-clock-o" aria-hidden="true"></i> {% endif %} {% if not test.data.name %} No Name {% else %} {{ test.data.name }} {% endif %}</h3>
 <h5>Has {{ test.data.runs|length }} runs</h3>
 <h5>Has {{ test.data.config_data_dict.tests|length }} tests</h3>
 
