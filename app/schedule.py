@@ -83,7 +83,7 @@ def func(self):
                     ssl_alarm[env]['%s' % info['serialNumber']] = {}
                 self.info(self.rid, "ssl_alarm3: %s" % str(ssl_alarm[env]))
 
-                for left in [2,  5,  6, 10, 30, 65]:
+                for left in [2,  5,  10, 30]:
                     is_alarmed = ssl_alarm[env]['%s' % info['serialNumber']].get(str(left), False)
                     self.info(self.rid, "Left: %s: %s" % (left, is_alarmed))
                     if info['daysLeft'] == left and not is_alarmed:
