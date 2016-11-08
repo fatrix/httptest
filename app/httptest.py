@@ -38,16 +38,26 @@ def func(self, data, version, response_obj=None):
 
         def _send_request(self):
             headers = self.kwargs.get("headers", {})
-            if self.data and self.data.startswith("http"):
-                self.data = requests.get(self.data).text
+
+            session = requests.Session()
+            adapter = requests.adapters.HTTPAdapter(max_retries=2)
+            prepared_req = None
+            if not self.method:
+                self.method = "GET"
+            #if self.data and self.data.startswith("http"):
+            #    prepared_req = requests.Request("GET", self.data, adapter)
             if self.data and self.data.startswith("<"):
                 headers['Content-Type'] = 'application/xml'
-                r = requests.request(self.method, self.url, data=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers, allow_redirects=False)
+                r = requests.Request(self.method, self.url, data=self.data, auth=self.auth, headers=headers)
             elif self.data:
                 self.data = json.loads(self.data)
-                r = requests.request(self.method, self.url, json=self.data, auth=self.auth, verify=self.verify, timeout=10, headers=headers, allow_redirects=False)
+                r = requests.Request(self.method, self.url, json=self.data, auth=self.auth, headers=headers)
             else:
-                r = requests.request(self.method, self.url, verify=self.verify, auth=self.auth, timeout=10, headers=headers, allow_redirects=False)
+                r = requests.Request(self.method, self.url, auth=self.auth, headers=headers)
+            if r:
+                prepared_req = r.prepare()
+                session.mount("https://", adapter)
+                r = session.send(prepared_req, verify=self.verify, timeout=10, allow_redirects=False)
 
             # save data
             self.response = r
