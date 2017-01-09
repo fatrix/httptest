@@ -71,11 +71,13 @@ def get_ssl_info(self, host, port):
                 """Retrieve server's certificate at the specified address (host, port)."""
                 # it is similar to ssl.get_server_certificate() but it returns a dict
                 # and it verifies ssl unconditionally, assuming create_default_context does
+                context = ssl._create_stdlib_context()
+                context.set_ciphers(("HIGH:-aNULL:-eNULL:-PSK:RC4-SHA:RC4-MD5"))
+                context.verify_mode = ssl.CERT_REQUIRED
+                context.load_verify_locations(CA_CERTS)
+
                 sock = socket.create_connection(addr, timeout=timeout)
-                sslsock = ssl.wrap_socket(sock, cert_reqs=ssl.CERT_REQUIRED,
-                                                                           ca_certs=CA_CERTS,
-                                                                           ciphers=("HIGH:-aNULL:-eNULL:"
-                                                                                                "-PSK:RC4-SHA:RC4-MD5"))
+                sslsock = context.wrap_socket(sock, server_hostname=addr[0])
                 cert = sslsock.getpeercert()
                 sock.close()
                 return cert
