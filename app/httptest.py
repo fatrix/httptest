@@ -199,11 +199,16 @@ def func(self, data, version, response_obj=None):
 
                 if self.assert_key == "assert_header_value_contains":
                     headers = self.assert_value
-                    for k, v in headers.iteritems():
-                        if self.response.headers.get(k, None):
-                            assert v in self.response.headers.get(k), "assert_header_value_contains failed, header is: %s" % self.response.headers.get(k)
-                        else:
-                            raise AssertionError("Header '%s' is not set" % k)
+                    try:
+                        for k, v in headers.iteritems():
+                            if self.response.headers.get(k, None):
+                                assert v in self.response.headers.get(k), "assert_header_value_contains failed, header '%s' is: %s" % (k, self.response.headers.get(k))
+                            else:
+                                raise AssertionError("Header '%s' is not set" % k)
+                    except AttributeError, e:
+                        warn(rid, "Headers isis: "+str(headers))
+                        warn(rid, "Headers type is: "+type(headers))
+
             except AssertionError, e:
                 #warn(rid, "%s: %s (%s)" % (self.url, str(e.message), self.response.text[:60]))
                 self.error = e.message
