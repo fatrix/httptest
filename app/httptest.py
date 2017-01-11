@@ -163,9 +163,9 @@ def func(self, data, version, response_obj=None):
                 self._send_request()
                 self.response_text = self.response.text
                 if self.assert_key == "assert_status_code_is":
-                    assert int(self.assert_value) == self.response.status_code, "%s is not %s" % (self.assert_value, self.response.status_code)
+                    assert int(self.assert_value) == self.response.status_code, "%s is expected, but was %s" % (self.assert_value, self.response.status_code)
                 if self.assert_key == "assert_status_code_is_not":
-                    assert int(self.assert_value) != self.response.status_code, "%s is %s" % (self.assert_value, self.response.status_code)
+                    assert int(self.assert_value) != self.response.status_code, "%s is not expected, but was %s" % (self.assert_value, self.response.status_code)
                 if self.assert_key == "assert_body_contains":
                     assert self.assert_value in self.response.text, "assert_body_contains failed, string %s not found in response body" % (self.assert_value)
 
