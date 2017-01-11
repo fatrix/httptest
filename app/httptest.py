@@ -79,7 +79,7 @@ def func(self, data, version, response_obj=None):
             self.verify = self.kwargs.get('ssl_verify', True)
             try:
                 self._send_request()
-                assert int(self.status_code) == self.response.status_code, "%s is not %s" % (self.status_code, self.response.status_code)
+                assert int(self.status_code) == self.response.status_code, "%s is expected, but was %s" % (self.status_code, self.response.status_code)
                 if self.type:
                     response_type = eval(self.type.replace("<", "").replace(">", ""))
                     #info(rid, str(response_type))
@@ -171,7 +171,14 @@ def func(self, data, version, response_obj=None):
 
                 if self.assert_key == "assert_is_json":
                     try:
-                        self.response.json()
+                        try:
+                            self.response.json()
+                        except AttributeError, e:
+                            # accept null as valid JSON
+                            if self.response_text == "null":
+                                pass
+                            else:
+                                raise e
                     except:
                         raise AssertionError("assert_is_json evaluated to false, should be true")
 
