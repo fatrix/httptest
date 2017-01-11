@@ -207,7 +207,7 @@ def func(self, data, version, response_obj=None):
                                 raise AssertionError("Header '%s' is not set" % k)
                     except AttributeError, e:
                         warn(rid, "Headers isis: "+str(headers))
-                        warn(rid, "Headers type is: "+type(headers))
+                        warn(rid, "Headers type is: "+str(type(headers)))
 
             except AssertionError, e:
                 #warn(rid, "%s: %s (%s)" % (self.url, str(e.message), self.response.text[:60]))
