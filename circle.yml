@@ -8,6 +8,7 @@ test:
     - git config --global push.default matching
     - git commit static/docs/* -m "update docs [ci skip]" || true
     - git push
+    - pip install requests=2.12.4
     - python app/httptest.py
     - python app/utils.py
 deployment:
