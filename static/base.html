@@ -116,13 +116,13 @@ window.api_url = "{{FRONTEND_API_URL}}";
                 {% if LOGOUT_URL != None %}
                 <a href="{{ LOGOUT_URL }}">Logout</a>
                 {% else %}
-                <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/admin/httptest/static/index.html">Logout</a>
+                <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/{{RUNTIME_USER}}/httptest/static/index.html">Logout</a>
                 {% endif %}
                 {% else %}
                 {% if LOGIN_URL != None %}
                 <a href="{{ LOGIN_URL }}">Login</a>
                 {% else %}
-                <a href="{% url 'cas-login' %}?service=/userland/admin/httptest/static/index.html">Login</a>
+                <a href="{% url 'cas-login' %}?service=/userland/{{RUNTIME_USER}}/httptest/static/index.html">Login</a>
                 {% endif %}
                 {% endif %}
                 </li>

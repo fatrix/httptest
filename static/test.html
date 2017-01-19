@@ -1,4 +1,4 @@
-{% extends "admin:httptest:static/base.html" %}
+{% extends ""|add:RUNTIME_USER|add:":httptest:static/base.html" %}
 
 {% load humanize %}
 {% load cache %}
@@ -21,7 +21,7 @@
 
     {% if not "noform" in QUERY_PARAMS %}
     {% cache 1000 httptest philipsahli adsense %}
-    {% include "admin:httptest:static/includes/adsense.html" %}
+    {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/adsense.html" %}
     {% endcache %}
     {% endif %}
 
@@ -29,7 +29,7 @@
         <div class="col-md-8">
             {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
             {% if not "noform" in QUERY_PARAMS %}
-            {% include "admin:httptest:static/includes/form.html" with obj=obj %}
+            {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/form.html" with obj=obj %}
             <hr>
             {% endif %}
         </div>
@@ -128,8 +128,8 @@
                         {% endif %}
                         <div id="{{failure.id}}headers" class="collapse">
                             <h4>Headers</h4>
-                            <h5>Request Headers</h5> {% include "admin:httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
-                            <h5>Response Headers</h5> {% include "admin:httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
+                            <h5>Request Headers</h5> {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/dynamic_table.html" with items=failure.headers.request.items %}
+                            <h5>Response Headers</h5> {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/dynamic_table.html" with items=failure.headers.response.items %}
                         </div>
                         <div id="{{failure.id}}body" class="collapse">
                             <h4>Response Body</h4>
@@ -139,14 +139,14 @@
                     {% endfor %} {% for error in l.errors %}
                     <div class="alert alert-danger" role="alert">
                         <h5>{{error.message}}</h5>
-                        {% include "admin:httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
+                        {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
                         {% if not "nobuttons" in QUERY_PARAMS %}
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show Headers</button>
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show Response Body</button>
                         {% endif %}
                         <div id="{{error.id}}headers" class="collapse">
-                            <h5>Request Headers</h5> {% include "admin:httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
-                            <h5>Response Headers</h5> {% include "admin:httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
+                            <h5>Request Headers</h5> {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/dynamic_table.html" with items=error.headers.request.items %}
+                            <h5>Response Headers</h5> {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/dynamic_table.html" with items=error.headers.response.items %}
                         </div>
 
                         <div id="{{error.id}}body" class="collapse">
