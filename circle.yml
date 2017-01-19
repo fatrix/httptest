@@ -9,8 +9,8 @@ test:
     - git commit static/docs/* -m "update docs [ci skip]" || true
     - git push
     - pip install requests==2.12.4
-    - python app/httptest.py
-    - python app/utils.py
+    - python app/httptest.py -v
+    - python app/utils.py -v
 deployment:
   test:
     branch: master
