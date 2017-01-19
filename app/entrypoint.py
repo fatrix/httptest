@@ -49,6 +49,7 @@ def func(self):
     # reset
     elif self.method == "POST" and self.GET.get('action') == "reset":
         data.data['runs'] = []
+        data.data['table'] = ""
         self.datastore.update(data)
         self.datastore.session.commit()
         return self.responses.JSONResponse({'message': "reset"})
@@ -59,8 +60,6 @@ def func(self):
         return self.responses.JSONResponse({'message': "delete"})
     # run
     elif self.method == "POST":
-        #import pprint; pprint.pprint(data.data, indent=4)
-        #from utils import debug; debug()
         if not self.GET.has_key("from_store"):
             name = self.POST.get("name", None)
             config_data = self.POST.get("config_data", None)
@@ -136,8 +135,46 @@ def func(self):
                     data.data['runs'].pop(0)
         else:
             data.data['runs'] = [runs]
+
+        try:
+            # create table structure
+            from utils import TableStructure
+            table = TableStructure()
+
+            ngtable = TableStructure()
+            for test_name, v in runs['result'].items():
+                ngtable.add_row(test_name)
+            #placeholder='<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>'
+            placeholder=None
+            for run in data.data['runs']:
+                #from utils import debug; debug()
+                datetime = run['datetime']
+                for test_name, result in run['result'].items():
+                    for r in result['failures']:
+                        ngtable.add_column(r['env_name'])
+                    for r in result['successes']:
+                        ngtable.add_column(r['env_name'])
+                    for r in result['errors']:
+                        ngtable.add_column(r['env_name'])
+
+                for test_name, result in run['result'].items():
+                    for r in result['failures']:
+                        #ngtable.add_column(r['env_name'])
+                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>', placeholder=placeholder)
+                    for r in result['errors']:
+                        #ngtable.add_column(r['env_name'])
+                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>', placeholder=placeholder)
+                    for r in result['successes']:
+                        #ngtable.add_column(r['env_name'])
+                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>', placeholder=placeholder)
+            data.data['table'] = ngtable.html()
+        except Exception, e:
+            import traceback; traceback.print_stack()
+            raise e
+
         self.datastore.update(data)
         self.datastore.session.commit()
+
         # send report
         #utils.send_report(self, id, email_list, data.data['name'], run=mydatetime)
         return self.responses.JSONResponse(json.dumps({"message": (results, total_counter, str(mydatetime), ssl_info), 'runs_count': len(data.data['runs'])}))

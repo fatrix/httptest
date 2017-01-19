@@ -1,3 +1,6 @@
+import pprint
+from collections import OrderedDict
+
 def debug():
     from remote_pdb import RemotePdb
     RemotePdb('127.0.0.1', 4444).set_trace()
@@ -89,7 +92,6 @@ def get_ssl_info(self, host, port):
         daysLeft = expire_date - datetime.now()
 
         for subject_item in cert['subject']:
-#            print subject_item[0]
             if subject_item[0][0] == "commonName":
                 commonName = subject_item[0][1]
 
@@ -105,3 +107,121 @@ def get_ssl_info(self, host, port):
         cert_dict['commonName'] = commonName
         return cert_dict
 
+
+class TableStructure(object):
+    """
+    #structure = {
+    #    'row1':
+    #        {$
+    #            'col1':
+    #                [ 
+    #                    "content1",
+    #                    "content2"
+    #                ]
+    #        }
+    #}
+
+    >>> table = TableStructure()
+    >>> table.add_column("col1")
+    >>> table.add_column("col2")
+    >>> table.add_row("row1")
+    >>> table.add_row("row2")
+    >>> table.add_cell("row1", "col1", "row1/col1")
+    >>> table.add_cell("row1", "col1", "row1/col1/cell2")
+    >>> table.add_cell("row1", "col2", "row1/col2")
+    >>> table.add_cell("row2", "col1", "row2/col1")
+    >>> table.add_cell("row2", "col2", "row2/col2")
+    >>> print(table.rows)
+    OrderedDict([('row1', OrderedDict([('col1', ['row1/col1', 'row1/col1/cell2']), ('col2', ['row1/col2'])])), ('row2', OrderedDict([('col1', ['row2/col1']), ('col2', ['row2/col2'])]))])
+    >>> print table.html()
+    <table class="table"><thead><tr><th>Name</th><th>col1</th><th>col2</th></tr></thead><tbody><tr><td>row1</td><td>row1/col1 | row1/col1/cell2</td><td>row1/col2</td></tr><tr><td>row2</td><td>row2/col1</td><td>row2/col2</td></tr></tbody></table>
+    >>> # new
+    >>> table = TableStructure()
+    >>> table.add_columns(["col1", "col2"])
+    >>> table.add_rows(["row1", "row2"])
+    >>> placeholder = "placeholder"
+    >>> table.add_cell("row1", "col1", "row1/col1", placeholder=placeholder)
+    >>> table.add_cell("row1", "col1", "row1/col1/cell2", placeholder=placeholder)
+    >>> table.add_cell("row1", "col2", "row1/col2", placeholder=placeholder)
+    >>> table.add_cell("row2", "col1", "row2/col1", placeholder=placeholder)
+    >>> table.add_cell("row2", "col2", "row2/col2", placeholder=placeholder)
+    >>> table.get_cell("row1", "col1")
+    >>> table.get_cell("row2", "col1")
+    >>> table.get_cell("row1", "col2")
+    >>> table.get_cell("row2", "col2")
+    """
+    def __init__(self):
+        #self.data = {}
+        self.headers = ['Name',]
+        self.rows = OrderedDict()
+
+    def add_column(self, name):
+        #print  "add column for %s (placeholder)" % name
+        if name not in self.headers:
+            self.headers.append(name)
+
+    def add_columns(self, names):
+        for name in names:
+            self.add_column(name)
+
+    def add_row(self, name):
+        if name not in self.rows.keys():
+            self.rows.update({name: OrderedDict()})
+
+    def add_rows(self, names):
+        for name in names:
+            self.add_row(name)
+
+    def add_cell(self, row_name, column, data, placeholder=None):
+        row = self.rows.get(row_name, OrderedDict())
+        if column not in row.keys():
+            self.rows[row_name].update({column: [data]})
+        else:
+            self.rows[row_name][column].append(data)
+        if placeholder:
+            #print "try placeholder for row=%s column=%s" % (row_name, column)
+            #for col in self.rows[row_name].keys():
+            for col in self.headers:
+                if col == "Name":
+                    pass
+                elif column == col:
+                    #print "skip placeholder for row=%s column=%s to row=%s column=%s" % (row_name, column, row_name, col)
+                    pass
+                else:
+                    #print "add placeholder for row=%s column=%s to row=%s column=%s" % (row_name, column, row_name, col)
+                    r1 = self.rows[row_name].get(col, [])
+                    r1.append(placeholder)
+
+
+    def get_cell(self, row, column):
+        row = self.rows.get(row)
+        if column in row.keys():
+            return row.get(column)
+        else:
+            raise Exception("cell does not exist")
+
+    def html(self):
+        headers = ""
+        for header in self.headers:
+            headers += "<th>%s</th>" % header
+        rows = ""
+        for row_k, row_v in self.rows.items():
+            rows += "<tr>"
+            rows += "<td>"+str(row_k)+"</td>"
+            for col_k, col_v in row_v.items():
+                rows += "<td>"
+                for idx, cell_content in enumerate(col_v):
+                    if idx > 0:
+                        rows += " | "+cell_content
+                    else:
+                        rows += cell_content
+                rows += "</td>"
+            rows += "</tr>".format(row_name=row_k)
+        table = '<table class="table"><thead><tr>{headers}</tr></thead><tbody>{rows}</tbody></table>'.format(headers=headers, rows=rows)
+        #print self.rows
+
+        return table
+
+if __name__ == "__main__":
+        import doctest
+        doctest.testmod()

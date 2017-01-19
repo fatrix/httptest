@@ -1,4 +1,4 @@
-{% extends "philipsahli:httptest:static/base.html" %}
+{% extends ""|add:"admin"|add:":httptest:static/base.html" %}
 {% load humanize %}
 {% load datastore %}
 
@@ -134,10 +134,10 @@
         </div>
         <div class="col-md-4">
             <h3>Example</h3>
-            {% include "philipsahli:httptest:static/includes/example.html" %}
+            {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/example.html" %}
         </div>
         <div class="col-md-4">
-            {% include "philipsahli:httptest:static/includes/adsense_rectangle.html" %}
+            {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/adsense_rectangle.html" %}
         </div>
         <div class="col-md-4">
             <!--<a class="btn btn-lg btn-default btn-block" href="#">Call to Action</a>

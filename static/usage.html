@@ -1,4 +1,4 @@
-{% extends "philipsahli:httptest:static/base.html" %}
+{% extends ""|add:RUNTIME_USER|add:":httptest:static/base.html" %}
 
 {% block header %}
     {% if FRONTEND_STATIC_URL %}
@@ -15,7 +15,7 @@
     <div class="row">
     <div class="col-md-12 md">
     <h1>Usage</h1>
-{% include "philipsahli:httptest:static/docs/usage.html" %}
+{% include ""|add:RUNTIME_USER|add:":httptest:static/docs/usage.html" %}
     </div>
     </div>
 {% endblock %}

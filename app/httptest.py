@@ -1,4 +1,39 @@
 def func(self, data, version, response_obj=None):
+    """
+    >>> self = func
+    >>> self.info = lambda x, y: x
+    >>> self.error = lambda x, y: x
+    >>> self.warn = lambda x, y: x
+    >>> self.debug = lambda x, y: x
+    >>> self.rid = 1234
+    >>> data = {'tests': [{'name': 'test_home', 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}, {'name': 'test_fails', 'asserts': {'assert_status_code_is': 500}, 'uri': '/'}], 'environments': [{'name': 'sahli', 'base_url': 'https://sahli.net'}, {'name': 'httptest', 'base_url': 'https://httptest.sahli.net'}]}
+    >>> version = 2
+    >>> results, ssl_info, total_counter, success =  func(self, data, version, True)
+    >>> results.keys()
+    ['test_fails', 'test_home']
+    >>> results['test_fails'].keys()
+    ['errors', 'success', 'successes', 'result_counters', 'skipped', 'result', 'failures']
+    >>> results['test_fails']['success']
+    False
+    >>> len(results['test_fails']['failures'])
+    2
+    >>> results['test_fails']['failures'][0]['env_name']
+    'sahli'
+    >>> results['test_fails']['failures'][1]['env_name']
+    'httptest'
+    >>> len(results['test_fails']['errors'])
+    0
+    >>> len(results['test_fails']['successes'])
+    0
+    >>> len(results['test_home']['successes'])
+    2
+    >>> results['test_home']['successes'][0]['env_name']
+    'sahli'
+    >>> total_counter['run']
+    4
+    >>> success
+    True
+    """
     import unittest
     import requests
     import json
@@ -96,15 +131,13 @@ def func(self, data, version, response_obj=None):
                 raise requests.ConnectionError("%s: %s" % (self.url, str(e.message)))
             except Exception, e:
                 #error(rid, "%s: Exception: %s" % (self.url, str(e.message)))
-                #from remote_pdb import RemotePdb
-                #RemotePdb('127.0.0.1', 4444).set_trace()
                 self.error = repr(e)
                 raise Exception("%s: %s" % (self.url, repr(e)))
 
             #info(rid, "OK "+self.url)
 
     class HTTPTestV2(HTTPTest):
-        def __init__(self, outer_self, id, test_assert, **kwargs):
+        def __init__(self, outer_self, id, test_name, test_assert, **kwargs):
             super(HTTPTest, self).__init__()
             self.outer_self = outer_self
             self.assert_key, self.assert_value = test_assert
@@ -112,6 +145,7 @@ def func(self, data, version, response_obj=None):
             self.kwargs = kwargs
             self.url = kwargs['url']
             self.env_name = kwargs['env_name']
+            self.test_name = test_name
             self.method = kwargs.get('method', "GET")
             self.data = kwargs.get('data', None)
             self.auth = None
@@ -251,11 +285,9 @@ def func(self, data, version, response_obj=None):
                             test_assert_new[1] = int(test_assert_new[1])
                         except:
                             pass
-                    #print test_assert
-                    #print test_assert_new
                     N = 5
                     id = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-                    tests.append(HTTPTestV2(self, id, test_assert_new, **request_orig))
+                    tests.append(HTTPTestV2(self, id, request['name'], test_assert_new, **request_orig))
             else:
                 raise Exception("Unknown version %s" % version)
         suite.addTests(tests)
@@ -265,20 +297,28 @@ def func(self, data, version, response_obj=None):
     env_pool = ThreadPool(processes=10)
 
     class MyTestRunner(unittest.TextTestRunner):
+
         def _makeResult(self):
             return MyTextTestResult(self.stream, self.descriptions, self.verbosity)
 
     class MyTextTestResult(unittest.TextTestResult):
+
+        def __init__(self, stream=None, descriptions=None, verbosity=None):
+            self.successes = []
+            super(MyTextTestResult, self).__init__(stream, descriptions, verbosity)
+
         def addSkip(self, test, reason):
+
             super(MyTextTestResult, self).addSkip(test, reason)
             if hasattr(self, "ssl_info"):
                 self.ssl_info['None'] = None
             else:
                 self.ssl_info = {}
                 self.ssl_info["None"] = None
+
         def addSuccess(self, test):
-            #from remote_pdb import RemotePdb
-            #RemotePdb('127.0.0.1', 4444).set_trace()
+            super(MyTextTestResult, self).addSuccess(test)
+            self.successes.append((test, "a"))
             if hasattr(self, "ssl_info"):
                 self.ssl_info[test.env_name] = test.ssl_info
             else:
@@ -286,8 +326,6 @@ def func(self, data, version, response_obj=None):
                 self.ssl_info[test.env_name] = test.ssl_info
         def addFailure(self, test, err):
             super(MyTextTestResult, self).addFailure(test, err)
-            #from remote_pdb import RemotePdb
-            #RemotePdb('127.0.0.1', 4444).set_trace()
             if hasattr(self, "ssl_info"):
                 self.ssl_info[test.env_name] = test.ssl_info
             else:
@@ -295,8 +333,6 @@ def func(self, data, version, response_obj=None):
                 self.ssl_info[test.env_name] = test.ssl_info
         def addError(self, test, err):
             super(MyTextTestResult, self).addError(test, err)
-            #from remote_pdb import RemotePdb
-            #RemotePdb('127.0.0.1', 4444).set_trace()
             if hasattr(self, "ssl_info"):
                 self.ssl_info[test.env_name] = test.ssl_info
             else:
@@ -307,7 +343,6 @@ def func(self, data, version, response_obj=None):
     def run_test(*args):
         request = args[0]
         environments= args[1]
-        #return unittest.TextTestRunner().run(suite(request, environments, int(version)))
         return MyTestRunner().run(suite(request, environments, int(version)))
 
     # main
@@ -326,10 +361,8 @@ def func(self, data, version, response_obj=None):
             "skipped": 0 
         }
     ssl_info = {}
-    for func, async_result in result_pool.items():
+    for test_name, async_result in result_pool.items():
 
-        #from remote_pdb import RemotePdb
-        #RemotePdb('127.0.0.1', 4444).set_trace()
         result = async_result.get()
         success = result.wasSuccessful()
         #self.info(self.rid, str(result.__dict__))
@@ -360,37 +393,58 @@ def func(self, data, version, response_obj=None):
         errors_list = []
         for a in result.failures:
             failures_list.append({
-                'env_name': a[0].env_name, 
-                'response_text': getattr(a[0], "response_text", None), 
-                'url': a[0].url, 
-                'id': a[0].id, 
-                'message': str(a[0].error), 
-                'headers': a[0].__dict__.get("headers", {}) 
+                'env_name': a[0].env_name,
+                'test_name': a[0].test_name,
+                'response_text': getattr(a[0], "response_text", None),
+                'url': a[0].url,
+                'id': a[0].id,
+                'message': str(a[0].error),
+                'headers': a[0].__dict__.get("headers", {})
             })
         for a in result.errors:
             errors_list.append({
                 'env_name': a[0].env_name, 
+                'test_name': a[0].test_name,
                 'response_text': getattr(a[0], "response_text", None), 
                 'url': a[0].url, 
                 'id': a[0].id, 
                 'message': str(a[0].error), 
                 'headers': a[0].__dict__.get("headers", {})
             })
+        for r in result.failures + result.errors + result.skipped:
+            self.info(self.rid, "Result DEBUG: " + str(r[0].test_name) +" " +str(r[0].env_name) +" "+r[0]._testMethodName+" "+ r[0].url)
+
+        success_list = []
+        for r in result.successes:
+            self.info(self.rid, "Result DEBUG: " + str(r[0].test_name) +" " +str(r[0].env_name) +" "+r[0]._testMethodName+" "+ r[0].url)
+            success_list.append({
+                'env_name': r[0].env_name,
+                'test_name': r[0].test_name,
+                'response_text': getattr(r[0], "response_text", None),
+                'url': a[0].url,
+                'id': a[0].id,
+                'message': None,
+                'headers': a[0].__dict__.get("headers", {})
+            })
+
 
         for env, info in result.ssl_info.items():
             ssl_info[env] = info
 
-        result_list[func] = {
+        result_list[test_name] = {
                 "success": success,
                 "result_counters": result_counters,
-                "result": str(result), 
+                "result": str(result),
                 "failures": failures_list,
+                "successes": success_list,
                 "errors": errors_list,
                 "skipped": [a[0].url for a in result.skipped],
         }
-        #self.info(self.rid, str(result_list))
     if not response_obj:
         return self.responses.JSONResponse((len(result_pool), result_list))
     else:
         return result_list, ssl_info, total_counters, success
 
+if __name__ == "__main__":
+        import doctest
+        doctest.testmod()
