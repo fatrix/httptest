@@ -142,9 +142,11 @@ Expects the body contains a string
     assert_body_contains: Hello World
 
 #### assert_is_json
-Expects the response is parseable as JSON.
+
+Expects the response is parseable as JSON. The word ˋnullˋ is also treat at valid JSON.
 
     assert_is_json
+
 
 #### assert_is_not_json
 Expects the response is not parseable as JSON.
