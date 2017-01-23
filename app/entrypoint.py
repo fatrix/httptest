@@ -3,6 +3,7 @@ def func(self):
     import random, string
     import requests
     import sys
+    import pytz
 
     from datetime import datetime
 
@@ -116,7 +117,7 @@ def func(self):
             data.data['config_data_dict'] = config
 
         results, ssl_info, total_counter, success =  httptest.func(self, config, version, True)
-        mydatetime = datetime.now()
+        mydatetime = pytz.utc.localize(datetime.utcnow())
         runs = {
               'result': results,
               'ssl_info': ssl_info,
