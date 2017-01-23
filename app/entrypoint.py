@@ -165,16 +165,16 @@ def func(self):
                     row_name = "%s" % (test_name)
                     for r in result['failures']:
                         #ngtable.add_column(r['env_name'])
-                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
                     for r in result['errors']:
                         #ngtable.add_column(r['env_name'])
-                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
                     for r in result.get('successes', []):
                         #raise Exception(r)
                         #ngtable.add_column(r['env_name'])
-                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
