@@ -156,7 +156,7 @@ def func(self):
                     #debug()
                     for r in result['failures']:
                         ngtable.add_column(r['env_name'])
-                    for r in result['successes']:
+                    for r in result.get('successes', []):
                         ngtable.add_column(r['env_name'])
                     for r in result['errors']:
                         ngtable.add_column(r['env_name'])
@@ -171,7 +171,7 @@ def func(self):
                         #ngtable.add_column(r['env_name'])
                         row_name = "%s@%s" % (test_name, r['assert_key'])
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
-                    for r in result['successes']:
+                    for r in result.get('successes', []):
                         #raise Exception(r)
                         #ngtable.add_column(r['env_name'])
                         row_name = "%s@%s" % (test_name, r['assert_key'])
