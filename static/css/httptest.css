@@ -57,7 +57,7 @@ code
     box-shadow: 0 0 2px black;
 }
 td.value, td.name {
-    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace 
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace
 }
 table, div.collapse > p > code {
     font-size: 0.8em;

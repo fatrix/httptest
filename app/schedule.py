@@ -116,10 +116,8 @@ def func(self):
 
             alarms.append(ssl_alarm)
             try:
-                #self.info(self.rid, "Lasts: %s" % test.data['last'].datetime)
                 self.info(self.rid, "Alarm: %s" % str(test.data['ssl_alarm']))
             except Exception, e:
-                print e
                 self.error(self.rid, e.message)
             self.datastore.update(test)
             self.datastore.session.commit()

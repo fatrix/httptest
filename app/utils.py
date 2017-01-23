@@ -222,7 +222,6 @@ class TableStructure(object):
                 rows += "</td>"
             rows += "</tr>".format(row_name=row_k)
         table = '<table class="table"><thead><tr>{headers}</tr></thead><tbody>{rows}</tbody></table>'.format(headers=headers, rows=rows)
-        #print self.rows
 
         return table
 
