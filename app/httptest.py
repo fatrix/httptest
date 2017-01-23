@@ -1,3 +1,5 @@
+import os
+
 def func(self, data, version, response_obj=None):
     """
     >>> self = func
@@ -395,6 +397,7 @@ def func(self, data, version, response_obj=None):
             failures_list.append({
                 'env_name': a[0].env_name,
                 'test_name': a[0].test_name,
+                'assert_key': a[0].assert_key,
                 'response_text': getattr(a[0], "response_text", None),
                 'url': a[0].url,
                 'id': a[0].id,
@@ -405,6 +408,7 @@ def func(self, data, version, response_obj=None):
             errors_list.append({
                 'env_name': a[0].env_name, 
                 'test_name': a[0].test_name,
+                'assert_key': a[0].assert_key,
                 'response_text': getattr(a[0], "response_text", None), 
                 'url': a[0].url, 
                 'id': a[0].id, 
@@ -416,15 +420,17 @@ def func(self, data, version, response_obj=None):
 
         success_list = []
         for r in result.successes:
+            #raise Exception(r[0].assert_key)
             self.info(self.rid, "Result DEBUG: " + str(r[0].test_name) +" " +str(r[0].env_name) +" "+r[0]._testMethodName+" "+ r[0].url)
             success_list.append({
                 'env_name': r[0].env_name,
                 'test_name': r[0].test_name,
+                'assert_key': r[0].assert_key,
                 'response_text': getattr(r[0], "response_text", None),
-                'url': a[0].url,
-                'id': a[0].id,
+                'url': r[0].url,
+                'id': r[0].id,
                 'message': None,
-                'headers': a[0].__dict__.get("headers", {})
+                'headers': r[0].__dict__.get("headers", {})
             })
 
 
@@ -447,4 +453,7 @@ def func(self, data, version, response_obj=None):
 
 if __name__ == "__main__":
         import doctest
-        doctest.testmod(raise_on_error=True)
+        if os.environ.get("CI", None):
+            doctest.testmod(raise_on_error=True)
+        else:
+            doctest.testmod()

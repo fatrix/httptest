@@ -25,8 +25,8 @@ def func(self):
             data = self.datastore.get("testid", id, lock=True, nowait=True)
             self.info(self.rid, "Row for %s locked with lock=True")
         except LockException, e:
-            self.error(self.rid, str(e))
             self.error(self.rid, "Row for %s was locked with lock=True")
+            self.error(self.rid, str(e))
             raise Exception("Test already running")
         if not data:
             raise Exception("Not found")
@@ -142,14 +142,18 @@ def func(self):
             table = TableStructure()
 
             ngtable = TableStructure()
-            for test_name, v in runs['result'].items():
-                ngtable.add_row(test_name)
+            #for test_name, v in runs['result'].items():
+            #    raise Exception(v)
+            #    ngtable.add_row(test_name)
+            #    ngtable.add_row(test_name+"@"+v)
             #placeholder='<span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>'
             placeholder=None
             for run in data.data['runs']:
                 #from utils import debug; debug()
                 datetime = run['datetime']
                 for test_name, result in run['result'].items():
+                    from utils import debug
+                    #debug()
                     for r in result['failures']:
                         ngtable.add_column(r['env_name'])
                     for r in result['successes']:
@@ -158,15 +162,20 @@ def func(self):
                         ngtable.add_column(r['env_name'])
 
                 for test_name, result in run['result'].items():
+                    row_name = "%s" % (test_name)
                     for r in result['failures']:
                         #ngtable.add_column(r['env_name'])
-                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>', placeholder=placeholder)
+                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
                     for r in result['errors']:
                         #ngtable.add_column(r['env_name'])
-                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-fire" aria-hidden="true"></span>', placeholder=placeholder)
+                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
                     for r in result['successes']:
+                        #raise Exception(r)
                         #ngtable.add_column(r['env_name'])
-                        ngtable.add_cell(test_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>', placeholder=placeholder)
+                        row_name = "%s@%s" % (test_name, r['assert_key'])
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
             import traceback; traceback.print_stack()

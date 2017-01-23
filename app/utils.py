@@ -1,4 +1,6 @@
 import pprint
+import os
+
 from collections import OrderedDict
 
 def debug():
@@ -174,6 +176,8 @@ class TableStructure(object):
 
     def add_cell(self, row_name, column, data, placeholder=None):
         row = self.rows.get(row_name, OrderedDict())
+        if not self.rows.get(row_name, None):
+            self.add_row(row_name)
         if column not in row.keys():
             self.rows[row_name].update({column: [data]})
         else:
@@ -224,5 +228,7 @@ class TableStructure(object):
 
 if __name__ == "__main__":
         import doctest
-        #doctest.testmod(raise_on_error=True)
-        doctest.testmod()
+        if os.environ.get("CI", None):
+            doctest.testmod(raise_on_error=True)
+        else:
+            doctest.testmod()
