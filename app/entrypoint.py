@@ -10,6 +10,8 @@ def func(self):
     import httptest
     import utils
 
+    from utils import TableStructure
+
     from core.plugins.datastore import LockException
 
     id = self.GET.get("testid", None)
@@ -117,7 +119,7 @@ def func(self):
             data.data['config_data_dict'] = config
 
         results, ssl_info, total_counter, success =  httptest.func(self, config, version, True)
-        mydatetime = pytz.utc.localize(datetime.utcnow())
+        mydatetime = utils.get_datetime()
         runs = {
               'result': results,
               'ssl_info': ssl_info,
@@ -139,7 +141,6 @@ def func(self):
 
         try:
             # create table structure
-            from utils import TableStructure
             table = TableStructure()
 
             ngtable = TableStructure()
@@ -165,18 +166,14 @@ def func(self):
                 for test_name, result in run['result'].items():
                     row_name = "%s" % (test_name)
                     for r in result['failures']:
-                        #ngtable.add_column(r['env_name'])
                         row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
                     for r in result['errors']:
-                        #ngtable.add_column(r['env_name'])
                         row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
                     for r in result.get('successes', []):
-                        #raise Exception(r)
-                        #ngtable.add_column(r['env_name'])
                         row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s" aria-hidden="true"></span>' % run['datetime'], placeholder=placeholder)
+                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
             import traceback; traceback.print_stack()

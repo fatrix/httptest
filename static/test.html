@@ -121,7 +121,7 @@
                     <h4>{{ url }}</h4> {% for failure in l.failures %}
                     <div class="alert alert-warning" role="alert">
                         <h5>{{failure.message}}</h5>
-                        {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message %}
+                        {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message duration=failure.duration %}
                         {% if not "nobuttons" in QUERY_PARAMS %}
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
@@ -139,7 +139,7 @@
                     {% endfor %} {% for error in l.errors %}
                     <div class="alert alert-danger" role="alert">
                         <h5>{{error.message}}</h5>
-                        {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message %}
+                        {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=error.env_name url=error.url message=error.message duration=error.duration %}
                         {% if not "nobuttons" in QUERY_PARAMS %}
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}headers">Show Headers</button>
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{error.id}}body">Show Response Body</button>

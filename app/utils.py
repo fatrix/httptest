@@ -1,7 +1,12 @@
-import pprint
 import os
 
+import pytz
+from datetime import datetime
+
 from collections import OrderedDict
+
+def get_datetime():
+    return pytz.utc.localize(datetime.utcnow())
 
 def debug():
     from remote_pdb import RemotePdb

@@ -115,6 +115,7 @@ def func(self, data, version, response_obj=None):
                 raise unittest.SkipTest("test by request disabled (%s)" % self.url)
             self.verify = self.kwargs.get('ssl_verify', True)
             try:
+
                 self._send_request()
                 assert int(self.status_code) == self.response.status_code, "%s is expected, but was %s" % (self.status_code, self.response.status_code)
                 if self.type:
@@ -196,7 +197,12 @@ def func(self, data, version, response_obj=None):
                 else:
                     self.ssl_info = "Unexpected SSL Error (%s)" % str(e)
             try:
+                self.starttime = utils.get_datetime()
                 self._send_request()
+                self.endtime = utils.get_datetime()
+                delta = self.endtime - self.starttime
+                self.duration = int(delta.total_seconds() * 1000)
+
                 self.response_text = self.response.text
                 if self.assert_key == "assert_status_code_is":
                     assert int(self.assert_value) == self.response.status_code, "%s is expected, but was %s" % (self.assert_value, self.response.status_code)
@@ -398,6 +404,7 @@ def func(self, data, version, response_obj=None):
                 'env_name': a[0].env_name,
                 'test_name': a[0].test_name,
                 'assert_key': a[0].assert_key,
+                'duration': a[0].duration,
                 'response_text': getattr(a[0], "response_text", None),
                 'url': a[0].url,
                 'id': a[0].id,
@@ -409,6 +416,7 @@ def func(self, data, version, response_obj=None):
                 'env_name': a[0].env_name, 
                 'test_name': a[0].test_name,
                 'assert_key': a[0].assert_key,
+                'duration': a[0].duration,
                 'response_text': getattr(a[0], "response_text", None), 
                 'url': a[0].url, 
                 'id': a[0].id, 
@@ -426,6 +434,7 @@ def func(self, data, version, response_obj=None):
                 'env_name': r[0].env_name,
                 'test_name': r[0].test_name,
                 'assert_key': r[0].assert_key,
+                'duration': r[0].duration,
                 'response_text': getattr(r[0], "response_text", None),
                 'url': r[0].url,
                 'id': r[0].id,
