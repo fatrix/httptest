@@ -434,7 +434,7 @@ def func(self, data, version, response_obj=None):
                 'env_name': r[0].env_name,
                 'test_name': r[0].test_name,
                 'assert_key': r[0].assert_key,
-                'duration': getattr(a[0], "duration", None),
+                'duration': getattr(r[0], "duration", None),
                 'response_text': getattr(r[0], "response_text", None),
                 'url': r[0].url,
                 'id': r[0].id,
