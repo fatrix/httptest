@@ -28,7 +28,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            {% for obj in data_for_user %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
+            {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
             {% if not "noform" in QUERY_PARAMS %}
             {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/form.html" with obj=obj %}
             <hr>
