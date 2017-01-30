@@ -2,6 +2,7 @@
 
 {% load humanize %}
 {% load cache %}
+{% load datastore %}
 
 {% block body %}
 {% if is_authenticated or "noform" in QUERY_PARAMS %}
@@ -27,7 +28,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            {% for obj in datastore.all %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
+            {% for obj in data_for_user %} {% ifequal obj.data.testid QUERY_PARAMS.testid %} 
             {% if not "noform" in QUERY_PARAMS %}
             {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/form.html" with obj=obj %}
             <hr>
@@ -124,7 +125,7 @@
                         {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table.html" with env=failure.env_name url=failure.url message=failure.message duration=failure.duration %}
                         {% if not "nobuttons" in QUERY_PARAMS %}
                         <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}headers">Show headers</button>
-                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show response text</button>
+                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#{{failure.id}}body">Show Response Body</button>
                         {% endif %}
                         <div id="{{failure.id}}headers" class="collapse">
                             <h4>Headers</h4>
