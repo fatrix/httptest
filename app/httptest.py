@@ -427,19 +427,18 @@ def func(self, data, version, response_obj=None):
             self.info(self.rid, "Result DEBUG: " + str(r[0].test_name) +" " +str(r[0].env_name) +" "+r[0]._testMethodName+" "+ r[0].url)
 
         success_list = []
-        for r in result.successes:
-            #raise Exception(r[0].assert_key)
-            self.info(self.rid, "Result DEBUG: " + str(r[0].test_name) +" " +str(r[0].env_name) +" "+r[0]._testMethodName+" "+ r[0].url)
+        for a in result.successes:
+            self.info(self.rid, "Result DEBUG: " + str(a[0].test_name) +" " +str(a[0].env_name) +" "+a[0]._testMethodName+" "+ a[0].url)
             success_list.append({
-                'env_name': r[0].env_name,
-                'test_name': r[0].test_name,
-                'assert_key': r[0].assert_key,
-                'duration': getattr(r[0], "duration", None),
-                'response_text': getattr(r[0], "response_text", None),
-                'url': r[0].url,
-                'id': r[0].id,
+                'env_name': a[0].env_name,
+                'test_name': a[0].test_name,
+                'assert_key': a[0].assert_key,
+                'duration': getattr(a[0], "duration", None),
+                'response_text': getattr(a[0], "response_text", None),
+                'url': a[0].url,
+                'id': a[0].id,
                 'message': None,
-                'headers': r[0].__dict__.get("headers", {})
+                'headers': a[0].__dict__.get("headers", {})
             })
 
 
