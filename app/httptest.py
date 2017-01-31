@@ -8,11 +8,11 @@ def func(self, data, version, response_obj=None):
     >>> self.warn = lambda x, y: x
     >>> self.debug = lambda x, y: x
     >>> self.rid = 1234
-    >>> data = {'tests': [{'name': 'test_home', 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}, {'name': 'test_fails', 'asserts': {'assert_status_code_is': 500}, 'uri': '/'}], 'environments': [{'name': 'sahli', 'base_url': 'https://sahli.net'}, {'name': 'httptest', 'base_url': 'https://www.example.com/'}]}
+    >>> data = {'tests': [{'name': 'test_skip', 'skip': True, 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}, {'name': 'test_home', 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}, {'name': 'test_fails', 'asserts': {'assert_status_code_is': 500}, 'uri': '/'}], 'environments': [{'name': 'sahli', 'base_url': 'https://sahli.net'}, {'name': 'httptest', 'base_url': 'https://www.example.com/'}]}
     >>> version = 2
     >>> results, ssl_info, total_counter, success =  func(self, data, version, True)
     >>> results.keys()
-    ['test_fails', 'test_home']
+    ['test_fails', 'test_skip', 'test_home']
     >>> results['test_fails'].keys()
     ['errors', 'success', 'successes', 'result_counters', 'skipped', 'result', 'failures']
     >>> results['test_fails']['success']
@@ -32,7 +32,13 @@ def func(self, data, version, response_obj=None):
     >>> results['test_home']['successes'][0]['env_name']
     'sahli'
     >>> total_counter['run']
-    4
+    6
+    >>> total_counter['skipped']
+    2
+    >>> total_counter['success']
+    2
+    >>> total_counter['failures']
+    2
     >>> success
     True
     """
@@ -52,6 +58,7 @@ def func(self, data, version, response_obj=None):
 
     environments = data['environments']
     requests_data = data.get('requests', data['tests'])
+    config = data.get('config', {})
 
 
     class HTTPTest(unittest.TestCase):
@@ -301,8 +308,6 @@ def func(self, data, version, response_obj=None):
         suite.addTests(tests)
         return suite
 
-    result_list = {}
-    env_pool = ThreadPool(processes=10)
 
     class MyTestRunner(unittest.TextTestRunner):
 
@@ -353,7 +358,18 @@ def func(self, data, version, response_obj=None):
         environments= args[1]
         return MyTestRunner().run(suite(request, environments, int(version)))
 
-    # main
+
+    ### Main
+
+    # run tests in parallel
+    DEFAULT_POOL_SIZE = 10
+    MAX_POOL_SIZE = 20
+    pool = config.get("pool", DEFAULT_POOL_SIZE)
+    if pool > MAX_POOL_SIZE:
+        raise Exception("pool must not be higher than %s" % MAX_POOL_SIZE)
+    env_pool = ThreadPool(processes=pool)
+
+    result_list = {}
     result_pool = {}
     for request in requests_data:
         result_pool[request['name']] = env_pool.apply_async(run_test, args=[request, environments, int(version)])
@@ -361,16 +377,11 @@ def func(self, data, version, response_obj=None):
     env_pool.join()
 
     # for env
-    total_counters = {
-            "run": 0,
-            "errors": 0,
-            "failures": 0,
-            "success": 0,
-            "skipped": 0 
-        }
-    ssl_info = {}
-    for test_name, async_result in result_pool.items():
+    total_counters = { "run": 0, "errors": 0, "failures": 0, "success": 0, "skipped": 0 }
 
+    ssl_info = {}
+
+    for test_name, async_result in result_pool.items():
         result = async_result.get()
         success = result.wasSuccessful()
         #self.info(self.rid, str(result.__dict__))
