@@ -72,9 +72,9 @@ $(document).ready(function() {
     });
 
     if (window.api_url == null){
-        base_url = '/userland/'+window.user+'/httptest/api/apy/entrypoint/execute/';
+        base_url = '/userland/'+window.user+'/httptest/api/apy/entrypoint/execute/?';
     } else {
-        base_url = window.api_url;
+        base_url = window.api_url +"?";
     }
 
     function reload() {
@@ -85,7 +85,6 @@ $(document).ready(function() {
         var that = this;
         var orig_text = $(this).text();
         e.preventDefault();
-        // #buttons > div
         $("#buttons > div").remove();
 
         $(this).prop('disabled', true);
@@ -93,30 +92,38 @@ $(document).ready(function() {
 
         var url_data = $("input#url");
         data = $("#testForm").serialize();
-        $.ajax({
-            data: data,
-            success: function(data) {
-                $("button#runTest").text("Reloading page...");
-                setTimeout(reload, 3000);
-            },
-            error: function(xhr) {
-                try {
+        run = function(data, base_url, mytestid, version) {
+            $.ajax({ data: data, success: function(data) { if (data['status'] != "RUNNING") {
+                        $("button#runTest").text("Reloading page...");
+                        setTimeout(reload, 2000);
+                    } else {
+                        //url = data.url;
+                        //base_url = base_url+"?rid="+data.rid;
+                        if (base_url.indexOf("rid=") == -1) {
+                            url = base_url + "rid=" + data.rid + "&";
+                        }
+                        setTimeout(function() {
+                            run(data, url, mytestid, version);
+                        }, 3000);
+                    }
+                }, error: function(xhr) {
                     $(that).prop('disabled', false);
                     $(that).text(orig_text);
-                    var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + JSON.parse(xhr.responseText).exception_message + '</div>';
+                    try {
+                        var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + JSON.parse(xhr.responseText).exception_message + '</div>';
+                    } catch(err) {
+                        var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + "Unknown Error" + '</div>';
+                    }
                     $("div#buttons").append(txt);
-                } catch(err) {
-                    $(that).prop('disabled', false);
-                    $(that).text(orig_text);
-                    var txt = '<div class="alert alert-danger"> <strong>Error! </strong>' + "Unknown Error" + '</div>';
-                    $("div#buttons").append(txt);
-                }
-            },
-            processData: false,
-            type: 'POST',
-            url: base_url + '?data_from=payload&json=&testid=' + mytestid + "&version=" + version
+                },
+                processData: false,
+                type: 'POST',
+                url: base_url + 'async=&data_from=payload&json=&testid=' + mytestid + "&version=" + version
+            });
+
+        }
+        run(data, base_url, mytestid, version)
         });
-    });
     $("button#reset").click(function(e) {
         e.preventDefault();
         $.ajax({
@@ -126,7 +133,7 @@ $(document).ready(function() {
             error: function() {},
             processData: false,
             type: 'POST',
-            url: base_url + '?data_from=payload&json=&action=reset&testid=' + mytestid + "&version=" + version
+            url: base_url + 'data_from=payload&json=&action=reset&testid=' + mytestid + "&version=" + version
         });
     });
     $("button#delete").click(function(e) {
@@ -138,7 +145,7 @@ $(document).ready(function() {
             error: function() {},
             processData: false,
             type: 'POST',
-            url: base_url + '?data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
+            url: base_url + 'data_from=payload&json=&action=delete&shared_key=e31709b5-f163-4219-908d-ba5abb482e5d&testid=' + mytestid + "&version=" + version
         });
     });
 
