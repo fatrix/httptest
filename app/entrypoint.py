@@ -133,7 +133,7 @@ def func(self):
         if data.data.has_key("runs"):
             data.data['runs'].append(runs)
             if len(data.data['runs']) > 30:
-                to_cleanup = len(data.data['runs'])-30
+                to_cleanup = len(data.data['runs'])-20
                 for num in range(0, to_cleanup):
                     data.data['runs'].pop(0)
         else:
