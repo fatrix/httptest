@@ -88,8 +88,11 @@ def func(self, data, version, response_obj=None):
             prepared_req = None
             if not self.method:
                 self.method = "GET"
-            #if self.data and self.data.startswith("http"):
-            #    prepared_req = requests.Request("GET", self.data, adapter)
+            if self.data and self.data.startswith("http"):
+                try:
+                    self.data = requests.get(self.data).text
+                except Exception, e:
+                    raise Exception("Could not load remote data (%s)" % repr(e))
             if self.data and self.data.startswith("<"):
                 headers['Content-Type'] = 'application/xml'
                 r = requests.Request(self.method, self.url, data=self.data, auth=self.auth, headers=headers)
