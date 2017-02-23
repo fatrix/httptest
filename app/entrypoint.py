@@ -166,13 +166,13 @@ def func(self):
                 for test_name, result in run['result'].items():
                     row_name = "%s" % (test_name)
                     for r in result['failures']:
-                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
+                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), r.get('assert_value', "")[:12])
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
                     for r in result['errors']:
-                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
+                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), r.get('assert_value', "")[:12])
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
                     for r in result.get('successes', []):
-                        row_name = "%s@%s" % (test_name, r.get('assert_key', "None"))
+                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), r.get('assert_value', "")[:12])
                         ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
