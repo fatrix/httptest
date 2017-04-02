@@ -152,6 +152,12 @@ class TableStructure(object):
     >>> table.add_cell("row1", "col2", "row1/col2", placeholder=placeholder)
     >>> table.add_cell("row2", "col1", "row2/col1", placeholder=placeholder)
     >>> table.add_cell("row2", "col2", "row2/col2", placeholder=placeholder)
+    >>> table.cell_contains("row2", "col2", "row2/col2")
+    True
+    >>> table.cell_contains("row2", "col2", "row2/c")
+    True
+    >>> table.cell_contains("row2", "col2", "notthere")
+    False
     >>> #table.get_cell("row1", "col1")
     >>> #table.get_cell("row2", "col1")
     >>> #table.get_cell("row1", "col2")
@@ -200,6 +206,7 @@ class TableStructure(object):
                     #print "add placeholder for row=%s column=%s to row=%s column=%s" % (row_name, column, row_name, col)
                     r1 = self.rows[row_name].get(col, [])
                     r1.append(placeholder)
+        return self.rows[row_name][column]
 
 
     def get_cell(self, row, column):
@@ -208,6 +215,14 @@ class TableStructure(object):
             return row.get(column)
         else:
             raise Exception("cell does not exist")
+
+    def cell_contains(self, row, column, data):
+        row = self.rows.get(row, {})
+        if column in row.keys():
+            return (data in row.get(column)[0])
+        else:
+            return False
+
 
     def html(self):
         headers = ""
@@ -220,10 +235,10 @@ class TableStructure(object):
             for col_k, col_v in row_v.items():
                 rows += "<td>"
                 for idx, cell_content in enumerate(col_v):
-                    if idx > 0:
-                        rows += " | "+cell_content
-                    else:
-                        rows += cell_content
+                    #if idx > 0:
+                    #    rows += " | "+cell_content
+                    #else:
+                    rows += cell_content
                 rows += "</td>"
             rows += "</tr>".format(row_name=row_k)
         table = '<table class="table"><thead><tr>{headers}</tr></thead><tbody>{rows}</tbody></table>'.format(headers=headers, rows=rows)

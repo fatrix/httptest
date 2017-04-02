@@ -1,3 +1,16 @@
+def full_stack():
+    import traceback, sys
+    exc = sys.exc_info()[0]
+    stack = traceback.extract_stack()[:-1]  # last one would be full_stack()
+    if not exc is None:  # i.e. if an exception is present
+        del stack[-1]       # remove call of full_stack, the printed exception
+                            # will contain the caught exception caller instead
+    trc = 'Traceback (most recent call last):\n'
+    stackstr = trc + ''.join(traceback.format_list(stack))
+    if not exc is None:
+         stackstr += '  ' + traceback.format_exc().lstrip(trc)
+    return stackstr
+
 def func(self):
     import json
     import random, string
@@ -164,19 +177,41 @@ def func(self):
                         ngtable.add_column(r['env_name'])
 
                 for test_name, result in run['result'].items():
+                    cells = []
                     row_name = "%s" % (test_name)
-                    for r in result['failures']:
-                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
-                    for r in result['errors']:
-                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
-                    for r in result.get('successes', []):
-                        row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
-                        ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
+                    # <span class="inlinesparkline">1,4,4,7,5,9,10</span>
+                    for result_type in ['errors', 'failures', 'successes']:
+                        for idx, r in enumerate(result[result_type], start=1):
+                            row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
+                            if ngtable.cell_contains(row_name, r['env_name'], '<span'):
+                                print "cell_contains"
+                                if "success" in result_type:
+                                    cell = ngtable.add_cell(row_name, r['env_name'], ',+1')
+                                else:
+                                    cell = ngtable.add_cell(row_name, r['env_name'], ',-1')
+                            else:
+                                print "cell_contains negative"
+                                if "success" in result_type:
+                                    cell = ngtable.add_cell(row_name, r['env_name'], '<span class="inlinesparkline">+1')
+                                else:
+                                    cell = ngtable.add_cell(row_name, r['env_name'], '<span class="inlinesparkline">-1')
+                            cells.append(cell)
+                    #for cell in cells:
+                    #    if isinstance(cell, str):
+                    #        cell += "</span>"
+                    #    else:
+                    #        cell.append("</span>")
+                    #    print cell
+
+                    #for r in result['errors']:
+                    #    row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
+                    #    ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-fire" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
+                    #for r in result.get('successes', []):
+                    #    row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
+                    #    ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
-            import traceback; traceback.print_stack()
+            print full_stack()
             raise e
 
         self.datastore.update(data)
