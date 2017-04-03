@@ -184,13 +184,11 @@ def func(self):
                         for idx, r in enumerate(result[result_type], start=1):
                             row_name = "%s@%s[%s]" % (test_name, r.get('assert_key', "None"), str(r.get('assert_value', ""))[:12])
                             if ngtable.cell_contains(row_name, r['env_name'], '<span'):
-                                print "cell_contains"
                                 if "success" in result_type:
                                     cell = ngtable.add_cell(row_name, r['env_name'], ',+1')
                                 else:
                                     cell = ngtable.add_cell(row_name, r['env_name'], ',-1')
                             else:
-                                print "cell_contains negative"
                                 if "success" in result_type:
                                     cell = ngtable.add_cell(row_name, r['env_name'], '<span class="inlinesparkline">+1')
                                 else:
