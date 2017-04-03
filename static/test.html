@@ -80,13 +80,6 @@
     </div>
 
                 <div class="col-md-12"><h3>Table</h3>
-                    <p>
-                    Inline Sparkline: <span class="inlinesparkline">1,4,4,7,5,9,10</span>.
-                    </p>
-
-                    <p>
-                    Inline Sparkline: <span class="inlinesparkline">1,4,-1,4,7,5,9,10,-20</span>.
-                    </p>
                     {% include ""|add:RUNTIME_USER|add:":httptest:static/includes/table_results.html" with table=obj.data.table %}
 
     {% endif %}
