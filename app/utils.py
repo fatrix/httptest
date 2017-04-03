@@ -133,25 +133,26 @@ class TableStructure(object):
     >>> table.add_column("col2")
     >>> table.add_row("row1")
     >>> table.add_row("row2")
-    >>> table.add_cell("row1", "col1", "row1/col1")
-    >>> table.add_cell("row1", "col1", "row1/col1/cell2")
-    >>> table.add_cell("row1", "col2", "row1/col2")
-    >>> table.add_cell("row2", "col1", "row2/col1")
-    >>> table.add_cell("row2", "col2", "row2/col2")
+    >>> cells = []
+    >>> cells.append(table.add_cell("row1", "col1", "row1/col1"))
+    >>> cells.append(table.add_cell("row1", "col1", "row1/col1/cell2"))
+    >>> cells.append(table.add_cell("row1", "col2", "row1/col2"))
+    >>> cells.append(table.add_cell("row2", "col1", "row2/col1"))
+    >>> cells.append(table.add_cell("row2", "col2", "row2/col2"))
     >>> print(table.rows)
     OrderedDict([('row1', OrderedDict([('col1', ['row1/col1', 'row1/col1/cell2']), ('col2', ['row1/col2'])])), ('row2', OrderedDict([('col1', ['row2/col1']), ('col2', ['row2/col2'])]))])
     >>> print table.html()
-    <table class="table"><thead><tr><th>Name</th><th>col1</th><th>col2</th></tr></thead><tbody><tr><td>row1</td><td>row1/col1 | row1/col1/cell2</td><td>row1/col2</td></tr><tr><td>row2</td><td>row2/col1</td><td>row2/col2</td></tr></tbody></table>
+    <table class="table"><thead><tr><th>Name</th><th>col1</th><th>col2</th></tr></thead><tbody><tr><td>row1</td><td>row1/col1row1/col1/cell2</td><td>row1/col2</td></tr><tr><td>row2</td><td>row2/col1</td><td>row2/col2</td></tr></tbody></table>
     >>> # new
     >>> table = TableStructure()
     >>> table.add_columns(["col1", "col2"])
     >>> table.add_rows(["row1", "row2"])
     >>> placeholder = "placeholder"
-    >>> table.add_cell("row1", "col1", "row1/col1", placeholder=placeholder)
-    >>> table.add_cell("row1", "col1", "row1/col1/cell2", placeholder=placeholder)
-    >>> table.add_cell("row1", "col2", "row1/col2", placeholder=placeholder)
-    >>> table.add_cell("row2", "col1", "row2/col1", placeholder=placeholder)
-    >>> table.add_cell("row2", "col2", "row2/col2", placeholder=placeholder)
+    >>> cells.append(table.add_cell("row1", "col1", "row1/col1", placeholder=placeholder))
+    >>> cells.append(table.add_cell("row1", "col1", "row1/col1/cell2", placeholder=placeholder))
+    >>> cells.append(table.add_cell("row1", "col2", "row1/col2", placeholder=placeholder))
+    >>> cells.append(table.add_cell("row2", "col1", "row2/col1", placeholder=placeholder))
+    >>> cells.append(table.add_cell("row2", "col2", "row2/col2", placeholder=placeholder))
     >>> table.cell_contains("row2", "col2", "row2/col2")
     True
     >>> table.cell_contains("row2", "col2", "row2/c")
