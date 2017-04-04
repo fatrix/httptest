@@ -1,4 +1,5 @@
 import os
+import time
 
 def func(self, data, version, response_obj=None):
     """
@@ -204,6 +205,10 @@ def func(self, data, version, response_obj=None):
                 else:
                     self.ssl_info = None
             except Exception, e:
+                print e
+                import traceback
+                traceback.print_exc()
+
                 self.outer_self.error(self.outer_self.rid, str(e))
                 if "handshake failure" in str(e):
                     self.ssl_info = str(e)
@@ -274,7 +279,6 @@ def func(self, data, version, response_obj=None):
                 raise requests.ConnectionError("%s: %s" % (self.url, str(e.message)))
             except Exception, e:
                 self.error = repr(e)
-                import time
                 import traceback
                 traceback.print_exc()
 

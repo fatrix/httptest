@@ -76,6 +76,9 @@ def get_ssl_info(self, host, port):
         self.debug(self.rid, "get_ssl_info for %s:%s" % (host, port))
 
         CA_CERTS = "/etc/pki/tls/certs/ca-bundle.trust.crt"
+        if not os.path.exists(CA_CERTS):
+            CA_CERTS = "/etc/ssl/certs/ca-certificates.crt"
+
 
         def getcert(addr, timeout=None):
                 """Retrieve server's certificate at the specified address (host, port)."""
