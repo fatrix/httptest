@@ -201,7 +201,10 @@ def func(self, data, version, response_obj=None):
                         port = url_parsed.port
                     else:
                         port = 443
-                    self.ssl_info = utils.get_ssl_info(self.outer_self, host, port)
+		    try:
+                        self.ssl_info = utils.get_ssl_info(self.outer_self, host, port)
+                    except:
+                        self.ssl_info = None
                 else:
                     self.ssl_info = None
             except Exception, e:
