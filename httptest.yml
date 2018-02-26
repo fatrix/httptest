@@ -1,0 +1,21 @@
+---
+tests:
+- skip: true
+  name: test_skip
+  asserts:
+    assert_status_code_is: 200
+  uri: "/"
+- name: test_home
+  asserts:
+    assert_status_code_is: 200
+  uri: "/"
+- name: test_fails
+  asserts:
+    assert_status_code_is: 500
+  uri: "/"
+environments:
+- name: sahli
+  base_url: https://sahli.net
+- name: httptest
+  base_url: https://www.example.com/
+
