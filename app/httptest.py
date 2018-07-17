@@ -1,6 +1,17 @@
 import os
 import time
 
+cache = {}
+
+class NotAllowedException(Exception):
+    pass
+
+def add_cache(k, v):
+    cache[k] = v
+
+def get_cache():
+    return cache
+
 def func(self, data, version, response_obj=None):
     """
     >>> self = func
@@ -42,6 +53,21 @@ def func(self, data, version, response_obj=None):
     2
     >>> success
     True
+    >>> # cache/eval regression tests 1
+    >>> data = {'tests': [
+    ...      {'name': 'test_set_cache', 'cache': { "SET-COOKIE": "response.headers['Set-Cookie']"}, 'asserts': {'assert_status_code_is': 200}, 'uri': '/'},
+    ...      {'name': 'test_use_cache', 'headers': {'Cookie': "{{SET-COOKIE}}"}, 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}
+    ...  ], 'environments': [ {'name': 'sahli', 'base_url': 'https://sahli.net'} ]}
+    >>> version = 2
+    >>> results, ssl_info, total_counter, success =  func(self, data, version, True)
+    >>> # cache/eval regression tests 2
+    >>> data = {'tests': [
+    ...      {'name': 'test_import_disallowed_module', 'cache': { "os": "input()"}, 'asserts': {'assert_status_code_is': 200}, 'uri': '/'}
+    ...  ], 'environments': [ {'name': 'sahli', 'base_url': 'https://sahli.net'} ]}
+    >>> version = 2
+    >>> results, ssl_info, total_counter, success =  func(self, data, version, True)
+    >>> results['test_import_disallowed_module']['errors'][0]['message']
+    "cache:name 'input' is not defined"
     """
     import unittest
     import requests
@@ -94,7 +120,7 @@ def func(self, data, version, response_obj=None):
                 try:
                     self.data = requests.get(self.data).text
                     info(rid, "Loaded data from %s" % self.data)
-                except Exception, e:
+                except Exception as e:
                     error(rid, "Error loading data from %s (%s) " % (self.data, repr(e)))
                     raise Exception("Could not load remote data (%s)" % repr(e))
             if self.data and self.data.startswith("<"):
@@ -138,15 +164,15 @@ def func(self, data, version, response_obj=None):
                     assert response_type == type(self.response.json()), "Wrong response type"
                 if self.pattern:
                     assert self.pattern in self.response.text, self.pattern + " not found in response body" % self.pattern
-            except AssertionError, e:
+            except AssertionError as e:
                 #warn(rid, "%s: %s (%s)" % (self.url, str(e.message), self.response.text[:60]))
                 self.error = e.message
                 raise AssertionError("%s: %s" % (self.url, str(e.message)))
-            except requests.ConnectionError, e:
+            except requests.ConnectionError as e:
                 #error(rid, "%s: ConnectionError: %s " % (self.url, str(e.message)))
                 self.error = e.message
                 raise requests.ConnectionError("%s: %s" % (self.url, str(e.message)))
-            except Exception, e:
+            except Exception as e:
                 #error(rid, "%s: Exception: %s" % (self.url, str(e.message)))
                 self.error = repr(e)
                 raise Exception("%s: %s" % (self.url, repr(e)))
@@ -164,6 +190,7 @@ def func(self, data, version, response_obj=None):
             self.env_name = kwargs['env_name']
             self.test_name = test_name
             self.method = kwargs.get('method', "GET")
+            self.cache = kwargs.get('cache', {})
             self.data = kwargs.get('data', None)
             self.auth = None
             self.id = id
@@ -201,14 +228,14 @@ def func(self, data, version, response_obj=None):
                         port = url_parsed.port
                     else:
                         port = 443
-		    try:
+                    try:
                         self.ssl_info = utils.get_ssl_info(self.outer_self, host, port)
                     except:
                         self.ssl_info = None
                 else:
                     self.ssl_info = None
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
                 import traceback
                 traceback.print_exc()
 
@@ -236,7 +263,7 @@ def func(self, data, version, response_obj=None):
                     try:
                         try:
                             self.response.json()
-                        except AttributeError, e:
+                        except AttributeError as e:
                             # accept null as valid JSON
                             if self.response_text == "null":
                                 pass
@@ -268,19 +295,28 @@ def func(self, data, version, response_obj=None):
                                 assert v in self.response.headers.get(k), "assert_header_value_contains failed, header '%s' is: %s" % (k, self.response.headers.get(k))
                             else:
                                 raise AssertionError("Header '%s' is not set" % k)
-                    except AttributeError, e:
+                    except AttributeError as e:
                         warn(rid, "Headers isis: "+str(headers))
                         warn(rid, "Headers type is: "+str(type(headers)))
 
-            except AssertionError, e:
+                try:
+                    for k, v in self.cache.items():
+                        add_cache(k, eval(v, {'__builtins__': {'response': self.response}}))
+                except NameError as e:
+                    raise NotAllowedException(e)
+
+            except NotAllowedException as e:
+                self.error = "cache:%s" % e.message
+                raise Exception("%s: cache:%s" % (self.url, repr(e)))
+            except AssertionError as e:
                 #warn(rid, "%s: %s (%s)" % (self.url, str(e.message), self.response.text[:60]))
                 self.error = e.message
                 raise AssertionError("%s: %s" % (self.url, str(e.message)))
-            except requests.ConnectionError, e:
+            except requests.ConnectionError as e:
                 #error(rid, "%s: ConnectionError: %s " % (self.url, str(e.message)))
                 self.error = e.message
                 raise requests.ConnectionError("%s: %s" % (self.url, str(e.message)))
-            except Exception, e:
+            except Exception as e:
                 self.error = repr(e)
                 import traceback
                 traceback.print_exc()
@@ -299,15 +335,27 @@ def func(self, data, version, response_obj=None):
             request_orig.update(env)
             request_orig['url'] = env['base_url']+request_orig['uri']
             variables = env.get('variables', {})
-            for var_k, var_v in variables.iteritems():
+            rewrites = dict(variables.items() + get_cache().items())
+
+            # URL Rewrite
+            for var_k, var_v in rewrites.iteritems():
                 request_orig['url'] = request_orig['url'].replace("{{%s}}" % var_k, var_v)
+
+            # Headers Rewrite
+            for var_k, var_v in rewrites.iteritems():
+                for k, v in request_orig.get('headers', {}).iteritems():
+                    request_orig['headers'][k] = v.replace("{{%s}}" % var_k, var_v)
+                    #print request_orig
+
             request_orig['env_name'] = env['name']
             if version == 1:
                 tests.append(HTTPTest(**request_orig))
             elif version == 2:
                 for test_assert in request_orig['asserts'].iteritems():
                     test_assert_new = list(copy.deepcopy(test_assert))
-                    for var_k, var_v in variables.iteritems():
+
+                    # Assert rewrites
+                    for var_k, var_v in rewrites.iteritems():
                         test_assert_new[1] = str(test_assert_new[1]).replace("{{%s}}" % var_k, var_v)
                         try:
                             test_assert_new[1] = int(test_assert_new[1])
@@ -375,8 +423,8 @@ def func(self, data, version, response_obj=None):
     ### Main
 
     # run tests in parallel
-    DEFAULT_POOL_SIZE = 10
-    MAX_POOL_SIZE = 20
+    DEFAULT_POOL_SIZE = 1
+    MAX_POOL_SIZE = 1
     pool = config.get("pool", DEFAULT_POOL_SIZE)
     if pool > MAX_POOL_SIZE:
         raise Exception("pool must not be higher than %s" % MAX_POOL_SIZE)
