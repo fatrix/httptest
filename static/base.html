@@ -96,6 +96,12 @@ window.api_url = "{{FRONTEND_API_URL}}";
                 <li>
                 <a href="/about.html" title="About the Tool, Disclaimer">About</a>
                 </li>
+                    {% if is_authenticated %}
+                    <li>
+                    <a href="/mytests/">My Tests</a>
+                    </li>
+                    {% endif %}
+
                 {% else %}
                 <li>
                 <a href="{{ FASTAPP_STATIC_URL}}usage.html">Usage</a>
@@ -103,12 +109,11 @@ window.api_url = "{{FRONTEND_API_URL}}";
                 <li>
                 <a href="{{ FASTAPP_STATIC_URL}}about.html">About</a>
                 </li>
-                {% endif %}
-
-                {% if is_authenticated %}
-                <li>
-                <a href="/mytests/">My Tests</a>
-                </li>
+                    {% if is_authenticated %}
+                    <li>
+                    <a href="{{ FASTAPP_STATIC_URL}}tests_list.html/">My Tests</a>
+                    </li>
+                    {% endif %}
                 {% endif %}
 
                 <li>
