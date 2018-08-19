@@ -1,24 +1,7 @@
-def full_stack():
-    import traceback, sys
-    exc = sys.exc_info()[0]
-    stack = traceback.extract_stack()[:-1]  # last one would be full_stack()
-    if not exc is None:  # i.e. if an exception is present
-        del stack[-1]       # remove call of full_stack, the printed exception
-                            # will contain the caught exception caller instead
-    trc = 'Traceback (most recent call last):\n'
-    stackstr = trc + ''.join(traceback.format_list(stack))
-    if not exc is None:
-         stackstr += '  ' + traceback.format_exc().lstrip(trc)
-    return stackstr
-
 def func(self):
     import json
     import random, string
     import requests
-    import sys
-    import pytz
-
-    from datetime import datetime
 
     import httptest
     import utils
@@ -82,7 +65,6 @@ def func(self):
             save_data = self.POST.get("save_data", "no")
             schedule = self.POST.get("schedule", "no")
             config_url = self.POST.get("config_url", None)
-            email = self.POST.get("email", [])
             email_list = [ addr.strip() for addr in self.POST["email"].split(',') ]
         else:
             name = data.data['name']
@@ -209,7 +191,7 @@ def func(self):
                     #    ngtable.add_cell(row_name, r['env_name'], '<span class="glyphicon glyphicon-ok text-success" title="%s (%sms)" aria-hidden="true"></span>' % (run['datetime'], r.get('duration', "?")), placeholder=placeholder)
             data.data['table'] = ngtable.html()
         except Exception, e:
-            print full_stack()
+            print utils.full_stack()
             raise e
 
         self.datastore.update(data)
