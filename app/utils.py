@@ -32,7 +32,7 @@ def sendmail(self, recipients, subject, message):
 def get_test_url(self, id, version=None, fq=False):
     if not version:
         version=2
-    if "FRONTEND_API_URL" in self.settings:
+    if "FRONTEND_API_URL" in self.settings and len(self.settings.FRONTEND_API_URL) > 0:
         url = "%s/test/?testid=%s&version=%s" % (self.settings.FRONTEND_BASE_URL, id, version)
     else:
         url = "/userland/%s/httptest/static/test.html?testid=%s&version=%s" % (self.settings.RUNTIME_USER, id, version)
@@ -255,3 +255,16 @@ if __name__ == "__main__":
             doctest.testmod(raise_on_error=True)
         else:
             doctest.testmod()
+
+def full_stack():
+    import traceback, sys
+    exc = sys.exc_info()[0]
+    stack = traceback.extract_stack()[:-1]  # last one would be full_stack()
+    if not exc is None:  # i.e. if an exception is present
+        del stack[-1]       # remove call of full_stack, the printed exception
+                            # will contain the caught exception caller instead
+    trc = 'Traceback (most recent call last):\n'
+    stackstr = trc + ''.join(traceback.format_list(stack))
+    if not exc is None:
+         stackstr += '  ' + traceback.format_exc().lstrip(trc)
+    return stackstr
