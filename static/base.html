@@ -118,7 +118,7 @@ window.api_url = "{{FRONTEND_API_URL}}";
 
                 <li>
                 {% if is_authenticated %}
-                {% if LOGOUT_URL != None or LOGOUT_URL is not "" %}
+                {% if LOGOUT_URL != None and LOGOUT_URL is not "" %}
                 <a href="{{ LOGOUT_URL }}">Logout</a>
                 {% else %}
                 <a href="{% url 'userland-logout' RUNTIME_USER 'httptest' %}?next=/userland/{{RUNTIME_USER}}/httptest/static/index.html">Logout</a>
