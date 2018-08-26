@@ -26,16 +26,19 @@ def func(self):
             self.GET['json'] = True
             self.GET['from_store'] = True
             self.method = "POST"
+
+            # Call entrypoint (as a user would to in form)
             r = self.siblings.entrypoint(self)
             result = json.loads(r.content)
             results.append(result)
+
+            # Get result
             result_counters = result['message'][1]
             mydatetime = result['message'][2]
-
             ssl_info = result['message'][3]
-
             failure_count_after = result_counters['failures'] + result_counters['errors']
 
+            # Initialize variables
             send_alarm=False
             send_recover=False
 
@@ -122,7 +125,6 @@ def func(self):
                 self.error(self.rid, e.message)
             self.datastore.update(test)
             self.datastore.session.commit()
-
 
     for test in tests:
         handle(test)
