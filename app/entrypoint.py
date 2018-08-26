@@ -22,9 +22,9 @@ def func(self):
     if id:
         try:
             data = self.datastore.get("testid", id, lock=True, nowait=True)
-            self.info(self.rid, "Row for %s locked with lock=True")
+            self.info(self.rid, "Row for %s locked with lock=True" % id)
         except LockException, e:
-            self.error(self.rid, "Row for %s was locked with lock=True")
+            self.error(self.rid, "Row for %s was locked with lock=True" % id)
             self.error(self.rid, str(e))
             raise Exception("Test already running")
         if not data:

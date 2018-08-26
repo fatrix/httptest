@@ -26,7 +26,7 @@ def sendmail(self, recipients, subject, message):
             format="html",
             html_body=message
         )
-
+    self.debug(self.rid, "sendmail to done: "+str(recipients))
     return result
 
 def get_test_url(self, id, version=None, fq=False):
@@ -42,13 +42,11 @@ def get_test_url(self, id, version=None, fq=False):
 
     return url
 
-
 def send_report(self, id, email, name, run=None, subject=None):
     from django.utils.http import urlquote
     import requests
     html_url = get_test_url(self, id, fq=True)
     html_url+="&nonav&noform&nooverview&nobuttons"
-
 
     if run:
         html_url+="&runonly=%s" % urlquote(run)

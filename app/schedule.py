@@ -58,6 +58,7 @@ def func(self):
                     utils.send_report(self, test.data['testid'], test.data['email'], test.data['name'], run=mydatetime, subject=subject)
                 except Exception, e:
                     self.error(self.rid, "Exception from utils.send_report")
+                    self.error(self.rid, "Exception: " + str(e))
 
             # SSL
             try:
